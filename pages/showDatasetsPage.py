@@ -6,7 +6,7 @@ from app import app
 
 
 def serve_layout():
-    dirs = list(os.listdir(os.getcwd()+"/datasets"))
+    dirs = []
     return(
         html.Div([
             html.H3('App 1'),
