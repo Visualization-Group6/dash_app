@@ -4,4 +4,4 @@ import pandas as pd
 def read_data(encoded_data, filename, content_type) -> pd.DataFrame:
     if not encoded_data:
         raise(Exception("markoerror"))
-    return pd.DataFrame({'test':[1,2,3,4,5,6]})
+    return pd.DataFrame({'test':[1,2,3,4,5,6]})  # TEST
