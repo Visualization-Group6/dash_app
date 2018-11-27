@@ -46,7 +46,8 @@ def parse_contents(contents, filename, date):
 
     decoded = base64.b64decode(content_string)
     try:
-        df = preProcessing.read_data(decoded, filename, content_type)
+        preProcessing.save_data(decoded, filename, content_type)
+        df = preProcessing.open_dataset(filename)
     except Exception as e:
         print(e)
         return html.Div([
