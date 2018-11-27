@@ -6,7 +6,20 @@ import networkx as nx
 #  https://plot.ly/~empet/14683/networks-with-plotly/#/
 #  https://plot.ly/python/network-graphs/
 
-G = nx.read_edgelist("testgraph.txt")
+
+def filter_weights(weight):
+    newdata = []
+    with open("testgraph.txt", "r") as f:
+        for line in f.read().split("\n"):
+            if int(line.split("'weight':")[1].split("}")[0]) > weight:
+                newdata.append(line)
+    with open("testgraph_"+str(weight)+".txt", "w") as f:
+        f.write("\n".join(newdata))
+    return "testgraph_"+str(weight)+".txt"
+
+
+
+G = nx.read_edgelist(filter_weights(0))
 
 weights = []
 for edge in G.edges(data=True):
@@ -36,31 +49,27 @@ edge_trace = [dict(type='scatter',
               mode='lines',
               line=dict(width=weights[k], color='black', ))  for k, e in enumerate(G.edges())]
 
-#edge_trace = go.Scatter(
-#    x=[],
-#    y=[],
-#    line=dict(width=0.5,color='#888'),
-#    hoverinfo='none',
-#    mode='lines')
-
-#for edge in G.edges():
-#    x0, y0 = G.node[edge[0]]['pos']
-#    x1, y1 = G.node[edge[1]]['pos']
-#    edge_trace['x'] += tuple([x0, x1, None])
-#    edge_trace['y'] += tuple([y0, y1, None])
-
 xs, ys = [], []
 for key in pos:
     xs.append(pos[key][0])
     ys.append(pos[key][1])
 
-nodes=dict(type='scatter',
-           x=xs,
-           y=ys,
-           mode='markers',
-           hoverinfo='text',
-           marker=dict(size=20, color='red'),
-           text=labels)
+pop_size = {}
+temps = {}
+locations = {}
+with open("demographics.txt") as f:
+    for line in f.read().split('\n'):
+        pop_size[line.split(",")[0]] = int(np.log(int(line.split(",")[1]))) * 10
+        locations[line.split(",")[0]] = line.split(",")[2]
+        temps[line.split(",")[0]] = line.split(",")[3]
+
+nodes = [dict(type='scatter',
+            x=[pos[label][0]],
+            y=[pos[label][1]],
+            mode='markers',
+            hoverinfo='text',
+            marker=dict(size=pop_size[label], color='red'),
+            text=label+", location: "+locations[label]+" average temp: "+temps[label]+" degrees.") for label in labels]
 
 #for node in G.nodes():
 #    x, y = G.node[node]['pos']
@@ -70,8 +79,8 @@ nodes=dict(type='scatter',
 #for node, adjacencies in enumerate(G.adjacency()):
 #    node_info = str(labels[node])
 #    node_trace['text']+=tuple([node_info])
-
-fig = go.Figure(data=edge_trace+[nodes],
+print(nodes)
+fig = go.Figure(data=edge_trace+nodes,
              layout=go.Layout(
                 title='<br>Holliday destinations',
                 titlefont=dict(size=16),

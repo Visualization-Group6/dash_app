@@ -4,19 +4,14 @@ from dash.dependencies import Input, Output
 from app import app
 
 from pages import indexPage, showDatasetsPage, examplePage, rensPage
+from pages.menu_items import topMenu
 
 
-def serve_menu():
-    return(
-        html.Div([
-            html.A(children="Home page", className="button button-primary", href="/"),
-            html.A(children="Data-sets page", className="button button-primary", href="/pages/showDatasetsPage")
-            ]))
-
+# Main layout for the app, all pages have this format.
 app.layout = html.Div([
-    serve_menu(),
+    topMenu.serve_menu(),  # show the top menu bar on all pages.
     dcc.Location(id='url', refresh=True),
-    html.Div(id='page-content')
+    html.Div(id='page-content')  # placeholder filled by callback with right page content.
 ])
 
 

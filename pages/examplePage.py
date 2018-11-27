@@ -2,17 +2,8 @@ import dash_html_components as html
 import dash_core_components as dcc
 
 
-def serve_menu():
-    return(
-        html.Div([
-            html.A(children="Home page", className="button button-primary", href="/"),
-            html.A(children="Data-sets page", className="button button-primary", href="/pages/showDatasetsPage")
-            ]))
-
-
 def serve_layout():
     return(html.Div(className='container', children=[
-        serve_menu(),
         html.Section([
             html.H4("This is a title"),
             html.Div("This is text"),
