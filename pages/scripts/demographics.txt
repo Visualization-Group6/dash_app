@@ -1,0 +1,6 @@
+GE,82,Europe,12
+FR,67,Europe,20
+UK,66,Not-Europe,8
+IT,60,Europe,25
+NE,17,Europe,15
+DK,5,Europe,-1

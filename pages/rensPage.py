@@ -4,15 +4,16 @@ import dash_ui as dui
 import dash_core_components as dcc
 
 def serve_layout():
-    return(html.Div(
+    return([html.Div(
         className="row",
         children=[
             html.Div(
-                className="six columns",
+                className="two columns",
                 children=[
                     html.Div(
                         children=dcc.Graph(
-                            id='left-graph',
+                            id='left-graph-t',
+                            className='window',
                             figure={
                                 'data': [{
                                     'x': [1, 2, 3],
@@ -22,7 +23,7 @@ def serve_layout():
                                 'layout': {
                                     'height': 400,
                                     'margin': {
-                                        'l': 10, 'b': 20, 't': 0, 'r': 0
+                                        'l': 0, 'b': 0, 't': 0, 'r': 0
                                     }
                                 }
                             }
@@ -31,10 +32,35 @@ def serve_layout():
                 ]
             ),
             html.Div(
-                className="six columns",
+                className="eight columns",
+                children=[
+                    html.Div(
+                        children=dcc.Graph(
+                            id='mid-graph-t',
+                            className='window',
+                            figure={
+                                'data': [{
+                                    'x': [1, 2, 3],
+                                    'y': [3, 1, 2],
+                                    'type': 'bar'
+                                }],
+                                'layout': {
+                                    'height': 400,
+                                    'margin': {
+                                        'l': 0, 'b': 0, 't': 0, 'r': 0
+                                    }
+                                }
+                            }
+                        )
+                    )
+                ]
+            ),
+            html.Div(
+                className="two columns",
                 children=html.Div([
                     dcc.Graph(
-                        id='right-top-graph',
+                        id='right-graph-t',
+                        className='window',
                         figure={
                             'data': [{
                                 'x': [1, 2, 3],
@@ -42,27 +68,84 @@ def serve_layout():
                                 'type': 'bar'
                             }],
                             'layout': {
-                                'height': 200,
-                                'margin': {'l': 10, 'b': 20, 't': 0, 'r': 0}
+                                'height': 400,
+                                'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
                             }
                         }
-                    ),
-                    dcc.Graph(
-                        id='right-bottom-graph',
-                        figure={
-                            'data': [{
-                                'x': [1, 2, 3],
-                                'y': [3, 1, 2],
-                                'type': 'bar'
-                            }],
-                            'layout': {
-                                'height': 200,
-                                'margin': {'l': 10, 'b': 20, 't': 0, 'r': 0}
-                            }
-                        }
-                    ),
-
+                    )
                 ])
             )
-        ]))
+        ]),
+          html.Div(
+              className="row",
+              children=[
+                  html.Div(
+                      className="two columns",
+                      children=[
+                          html.Div(
+                              children=dcc.Graph(
+                                  id='left-graph-b',
+                                  className='window',
+                                  figure={
+                                      'data': [{
+                                          'x': [1, 2, 3],
+                                          'y': [3, 1, 2],
+                                          'type': 'bar'
+                                      }],
+                                      'layout': {
+                                          'height': 200,
+                                          'margin': {
+                                              'l': 0, 'b': 0, 't': 0, 'r': 0
+                                          }
+                                      }
+                                  }
+                              )
+                          )
+                      ]
+                  ),
+                  html.Div(
+                      className="eight columns",
+                      children=[
+                          html.Div(
+                              children=dcc.Graph(
+                                  id='mid-graph-b',
+                                  className='window',
+                                  figure={
+                                      'data': [{
+                                          'x': [1, 2, 3],
+                                          'y': [3, 1, 2],
+                                          'type': 'bar'
+                                      }],
+                                      'layout': {
+                                          'height': 200,
+                                          'margin': {
+                                              'l': 0, 'b': 0, 't': 0, 'r': 0
+                                          }
+                                      }
+                                  }
+                              )
+                          )
+                      ]
+                  ),
+                  html.Div(
+                      className="two columns",
+                      children=html.Div([
+                          dcc.Graph(
+                              id='right-graph-b',
+                              className='window',
+                              figure={
+                                  'data': [{
+                                      'x': [1, 2, 3],
+                                      'y': [3, 1, 2],
+                                      'type': 'bar'
+                                  }],
+                                  'layout': {
+                                      'height': 200,
+                                      'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
+                                  }
+                              }
+                          )
+                      ])
+                  )
+              ])])
 
