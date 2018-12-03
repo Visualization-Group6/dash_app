@@ -1,12 +1,7 @@
-import pandas as pd
-import numpy as np
-import dash_html_components as html
-import time
-import pickle
 import os
-from pages.scripts import dataSelection as ds
+import numpy as np
+import pandas as pd
 
-# Petitie om dit te renamen naar enlargePenis.py
 
 def get_working_dir():
     wdr = os.getcwd()
@@ -46,6 +41,5 @@ def open_dataset(filename):
             network_data[int(i[1]), int(i[2]), int(i[0])] = int(i[3])
 
     print(network_data.shape)
-    return pd.DataFrame({'test': [network_data[498, 486, 1]]})  # TEST
-    # return pd.DataFrame({ 'test': [1,2,3]})
+    return network_data
 

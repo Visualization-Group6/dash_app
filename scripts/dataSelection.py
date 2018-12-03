@@ -1,6 +1,8 @@
-import numpy as np
 import random
-from pages.scripts import preProcessing as pp
+
+import numpy as np
+from scripts import preProcessing as pp
+
 
 def slice_array(Array, x_min=0, x_max=None, y_min=0, y_max=None, z_min=0, z_max=None):
     return Array[z_min:z_max,y_min:y_max,x_min:x_max]
@@ -53,5 +55,6 @@ if __name__ == '__main__':
 
     print('data filled')
 
-    from pages.scripts import timeIt
-    print(timeIt.get_average_runtime(preslice,[testarray,2],100))
+    from scripts import timeIt
+
+    print(timeIt.get_average_runtime(preslice, [testarray, 2], 100))

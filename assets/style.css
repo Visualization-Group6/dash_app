@@ -377,7 +377,67 @@ hr {
 
 .window{
   border-style: solid;
+  border-color: #00ffcc;
+  width: 100%;
 }
+
+.window-mid-bottom{
+  border-style: solid;
+  border-color: #00ffcc;
+}
+
+.window-left-bottom{
+  border-style: solid;
+  border-color: #00ffcc;
+}
+
+.slider{
+  position: relative;
+  margin: auto;
+}
+
+.dropdown-menu{
+  position: relative;
+  margin: auto;
+}
+
+.Select-control{
+  border-style: solid;
+  border-color: #00ffcc;
+}
+
+.mid-text{
+  display: table;
+  position: relative;
+  margin: auto;
+}
+
+.normal-text{
+  display: table;
+}
+
+.checkbox{
+  display: table;
+  position: relative;
+  margin: auto;
+}
+
+.button-option{
+  display: table;
+  position: relative;
+  margin: auto;
+  width: 75%;
+  color: #808080;
+  background-color: #DCDCDC;
+  border-color: #000000;
+}
+
+.button-option:hover{
+  color: #FFF;
+  background-color: #555555;
+  border-color: #000000;
+}
+
 /* Clearing
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 

@@ -1,14 +1,11 @@
 import base64
 import datetime
-import io
 
-from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_table_experiments as dt
-import sys
-import pandas as pd
-from pages.scripts import preProcessing
+from dash.dependencies import Input, Output, State
+from scripts import preProcessing
 from app import app
 
 

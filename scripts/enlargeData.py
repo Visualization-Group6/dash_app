@@ -1,4 +1,4 @@
-from pages.scripts import preProcessing
+from scripts import preProcessing
 
 working_dir = preProcessing.get_working_dir()
 
