@@ -4,8 +4,8 @@ from plotly import offline
 import numpy as np
 import networkx as nx
 
-from pages.scripts import preProcessing
-from pages.scripts import dataSelection
+from scripts import preProcessing
+from scripts import dataSelection
 
 def y_node(node): # function to determine y-value
     return node * 2
