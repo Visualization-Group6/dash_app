@@ -2,7 +2,7 @@ import numpy as np
 import plotly.graph_objs as go
 import plotly.plotly as py
 from plotly import offline
-from pages.scripts import dataSelection as ds
+from scripts import dataSelection as ds
 
 
 
