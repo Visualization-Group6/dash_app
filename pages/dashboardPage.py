@@ -152,7 +152,8 @@ def serve_layout():
 
 @app.callback(
     Output('output-text', 'children'),
-    [Input('top-left-dropdown', 'value'), Input('top-left-checkbox', 'values'), Input('del-selection', 'n_clicks')])
+    [Input('top-left-dropdown', 'value'), Input('top-left-checkbox', 'values'), Input('del-selection', 'n_clicks'),
+     Input('time_slider', 'value')])
 def update_output(*value):
     print(value)
     return ['You have selected "{}"'.format(value)]
