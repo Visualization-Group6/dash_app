@@ -1,6 +1,7 @@
 import plotly.graph_objs as go
 from plotly import offline
 import networkx as nx
+from scripts import preProcessing
 #  https://plot.ly/~empet/14683/networks-with-plotly/#/
 #  https://plot.ly/python/network-graphs/
 
@@ -66,4 +67,4 @@ def dijkstraPlot(filename, source, target):
 
     offline.plot(fig)
 
-dijkstraPlot("testgraph.txt", "UK", "IT")
+dijkstraPlot(preProcessing.get_working_dir()+"/ testgraph.txt", "UK", "IT")
