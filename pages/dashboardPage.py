@@ -98,12 +98,13 @@ def serve_layout():
                     children=[
                         html.Div(
                           id='bottom-left-container',
-                          className='window-left-bottom',
+                          className='window-small-bottom',
                           style={
                               'height': 200,
                               'width': '120%',
                               'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
-                          }
+                          },
+                          children=html.Section(className='mid-text', id='output-text')
                         )
                     ]
                   ),
@@ -117,8 +118,11 @@ def serve_layout():
                                 'height': 200,
                                 'width': '100%',
                                 'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
-                            }
-                            )
+                            },
+                            children=[
+                                html.H6("Select x-range: ", className='mid-text'),
+                                slider.draw('time_slider', 0, 50, 5)
+                            ])
                     ]
                   ),
                 html.Div(
@@ -126,7 +130,7 @@ def serve_layout():
                     children=[
                         html.Div(
                             id='bottom-right-container',
-                            className='window',
+                            className='window-small-bottom',
                             style={
                                 'height': 200,
                                 'width': '100%',
@@ -144,7 +148,7 @@ def serve_layout():
 
 
 @app.callback(
-    Output('bottom-middle-container', 'children'),
+    Output('output-text', 'children'),
     [Input('top-left-dropdown', 'value'), Input('top-left-checkbox', 'values'), Input('del-selection', 'n_clicks')])
 def update_output(*value):
     print(value)

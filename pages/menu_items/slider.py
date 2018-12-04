@@ -5,7 +5,7 @@ import dash_html_components as html
 def draw(element_id, start, stop, step):
     return (
         html.Div(
-            style={'width': 150},
+            style={'width': '90%'},
             className='slider',
             children=dcc.RangeSlider(
                 id=element_id,

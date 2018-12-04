@@ -14,7 +14,7 @@ def serve_layout():
                      html.Iframe(src='http://127.0.0.1:8051/upload', className='upload-window', width='25%'),
                      html.H6("View uploaded dataset:"),
                      dropdownMenu.draw('datasets-dropdown', options, class_name=None, width='25%'),
-                     html.A(children="Refresh datasets", className="button button-primary", href="/pages/examplePage",
+                     html.A(children="Refresh datasets", className="button button-primary", href="/",
                             style={'width': "25%"}),
                  ])
     )

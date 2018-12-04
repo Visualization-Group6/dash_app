@@ -192,8 +192,7 @@ input[type="button"] {
   text-decoration: none;
   white-space: nowrap;
   background-color: transparent;
-  border-radius: 4px;
-  border: 1px solid #bbb;
+  border-style: none solid none solid;
   cursor: pointer;
   box-sizing: border-box; }
 .button:hover,
@@ -216,7 +215,7 @@ input[type="reset"].button-primary,
 input[type="button"].button-primary {
   color: #808080;
   background-color: #DCDCDC;
-  border-color: #000000; }
+  border-color: #0FA0CE; }
 .button.button-primary:hover,
 button.button-primary:hover,
 input[type="submit"].button-primary:hover,
@@ -229,7 +228,7 @@ input[type="reset"].button-primary:focus,
 input[type="button"].button-primary:focus {
   color: #FFF;
   background-color: #555555;
-  border-color: #000000; }
+  border-color: #0FA0CE; }
 
 
 /* Forms
@@ -376,19 +375,25 @@ hr {
   border-top: 1px solid #E1E1E1; }
 
 .window{
-  border-style: solid;
-  border-color: #00ffcc;
+  border-style: none solid solid solid;
+  border-color: #0FA0CE;
+  width: 100%;
+}
+
+.menu-bar{
+  border-style: solid solid solid solid;
+  border-color: #0FA0CE;
   width: 100%;
 }
 
 .window-mid-bottom{
-  border-style: solid;
-  border-color: #00ffcc;
+  border-style: none solid solid solid;
+  border-color: #0FA0CE;
 }
 
-.window-left-bottom{
-  border-style: solid;
-  border-color: #00ffcc;
+.window-small-bottom{
+  border-style: none solid solid solid;
+  border-color: #0FA0CE;
 }
 
 .slider{
@@ -403,7 +408,7 @@ hr {
 
 .Select-control{
   border-style: solid;
-  border-color: #00ffcc;
+  border-color: #0FA0CE;;
 }
 
 .mid-text{
@@ -425,17 +430,18 @@ hr {
 .button-option{
   display: table;
   position: relative;
+  border-style: none solid solid solid;
   margin: auto;
   width: 75%;
   color: #808080;
   background-color: #DCDCDC;
-  border-color: #000000;
+  border-color: #0FA0CE;
 }
 
 .button-option:hover{
   color: #FFF;
   background-color: #555555;
-  border-color: #000000;
+  border-color: #0FA0CE;
 }
 
 .upload-window{
