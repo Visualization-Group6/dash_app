@@ -48,9 +48,11 @@ def make_scatterplot(filename):
     #    tickpos.append(np.log(i))
     #    ticklabels.append(i)
 
-    layout = go.Layout(hovermode= 'closest')
+    layout = go.Layout(hovermode= 'closest', height=200,margin={
+    'l': 40, 'b': 17, 't': 10, 'r': 0
+})
     fig = go.Figure([{'x': x,  'y': y, 'text': weight, 'type' : 'scatter', 'mode' : 'markers',
-            'marker': {'color': np.log(weight),  'colorbar' : {'title' : "Log Weigth"}}}], layout=layout)
+            'marker': {'color': np.log(weight),  'colorbar' : {'thickness':3,'title' : "Log"}}}], layout=layout)
     return fig
 
 

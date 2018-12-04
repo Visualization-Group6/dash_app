@@ -9,7 +9,8 @@ def serve_layout():
     cwd = preProcessing.get_working_dir()
     options = os.listdir(cwd)
     return(
-        html.Div(className='window',
+        html.Div(className=None,
+                 style={"border-style": 'none none solid none', 'border-color':'#0FA0CE'},
                  children=[
                      html.Iframe(src='http://127.0.0.1:8051/upload', className='upload-window', width='25%'),
                      html.H6("View uploaded dataset:"),

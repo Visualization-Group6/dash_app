@@ -3,6 +3,7 @@ import dash_html_components as html
 import dash_ui as dui
 import dash_core_components as dcc
 from pages.menu_items import dropdownMenu, slider, checkboxes
+from scripts import matrixVisualisation
 from app import app
 from dash.dependencies import Input, Output, State
 import json
@@ -10,6 +11,7 @@ import ast
 
 
 def serve_layout():
+    adjacency_matrix = matrixVisualisation.make_scatterplot('profile_semantic_trafo_final.txt')
     graph_1 = dcc.Graph(
         id='mid-graph-t',
         figure={
@@ -40,14 +42,14 @@ def serve_layout():
             className="row",
             children=[
                 html.Div(
-                    className="two columns",
+                    className="three columns",
                     children=[
                         html.Div(
                             id='top-left-container',
                             className='window',
                             style={
                                 'height': 400,
-                                'width': '120%',
+                                'width': '100%',
                                 'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
                             },
                             children=[
@@ -60,7 +62,7 @@ def serve_layout():
                     ]
                 ),
                 html.Div(
-                    className="eight columns",
+                    className="seven columns",
                     children=[
                         html.Div(
                             id='top-middle-container',
@@ -94,22 +96,22 @@ def serve_layout():
             className="row",
             children=[
                 html.Div(
-                    className="two columns",
+                    className="three columns",
                     children=[
                         html.Div(
                           id='bottom-left-container',
                           className='window-small-bottom',
                           style={
                               'height': 200,
-                              'width': '120%',
+                              'width': '100%',
                               'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
                           },
-                          children=html.Section(className='mid-text', id='output-text')
+                          children=dcc.Graph(figure=adjacency_matrix)
                         )
                     ]
                   ),
                 html.Div(
-                    className="eight columns",
+                    className="seven columns",
                     children=[
                         html.Div(
                             id='bottom-middle-container',
@@ -121,7 +123,8 @@ def serve_layout():
                             },
                             children=[
                                 html.H6("Select x-range: ", className='mid-text'),
-                                slider.draw('time_slider', 0, 50, 5)
+                                slider.draw('time_slider', 0, 50, 5),
+                                html.Section(className='mid-text', id='output-text')
                             ])
                     ]
                   ),
