@@ -438,6 +438,11 @@ hr {
   border-color: #000000;
 }
 
+.upload-window{
+  display: table;
+  position: relative;
+}
+
 /* Clearing
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 
