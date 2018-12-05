@@ -57,7 +57,7 @@
 /* For devices larger than 550px */
 @media (min-width: 550px) {
   .container {
-    width: 80%; }
+    width: 100%; }
   .column,
   .columns {
     margin-left: 0; }
@@ -375,10 +375,13 @@ hr {
   border-top: 1px solid #E1E1E1; }
 
 .window{
-  border-style: none solid solid solid;
+  border-style: solid solid solid solid;
   border-color: #0FA0CE;
   width: 100%;
+  position: relative;
+  margin: auto;
 }
+
 
 .menu-bar{
   border-style: solid solid solid solid;
@@ -387,13 +390,19 @@ hr {
 }
 
 .window-mid-bottom{
-  border-style: none solid solid solid;
+  border-style: solid solid solid solid;
   border-color: #0FA0CE;
+  width: 100%;
+  position: relative;
+  margin: auto;
 }
 
 .window-small-bottom{
-  border-style: none solid solid solid;
+  border-style: solid solid solid solid;
   border-color: #0FA0CE;
+  width: 100%;
+  position: relative;
+  margin: auto;
 }
 
 .slider{
@@ -414,12 +423,78 @@ hr {
   border-radius: 0 !important;
 }
 
+.plot-container{
+  display: table;
+  position: relative;
+  margin: auto;
+  width: 90%;
+}
+
 .mid-text{
   display: table;
   position: relative;
   margin: auto;
 }
 
+.main-svg{
+    width: 100%;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadein {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadein {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+._dash-loading-callback {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  margin-top: -60px;
+  margin-bottom: -60px;
+  display: inline-block;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  opacity: 0;
+  background-color: #ffffff;
+  -webkit-animation: fadein 1s linear forwards, spin 2s infinite linear; /* Safari and Chrome */
+  animation: fadein 1s linear forwards, spin 2s infinite linear;
+  animation-delay: 1s;
+  -webkit-animation-delay: 1s;
+}
 .normal-text{
   display: table;
 }

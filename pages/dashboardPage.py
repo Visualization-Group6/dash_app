@@ -8,10 +8,11 @@ from app import app
 from dash.dependencies import Input, Output, State
 import json
 import ast
+import mydcc
 
 
 def serve_layout():
-    adjacency_matrix = matrixVisualisation.make_scatterplot('profile_semantic_trafo_final.txt')
+    adjacency_matrix, xrange = matrixVisualisation.make_scatterplot('profile_semantic_trafo_final.txt')
     graph_1 = dcc.Graph(
         id='mid-graph-t',
         figure={
@@ -23,7 +24,7 @@ def serve_layout():
             'layout': {
                 'height': 200,
                 'margin': {
-                    'l': 50, 'b': 50, 't': 50, 'r': 50
+                    'l': 20, 'b': 50, 't': 50, 'r': 50
                 },
                 'xaxis': dict(
                     tickmode='linear',
@@ -64,6 +65,7 @@ def serve_layout():
                 html.Div(
                     className="seven columns",
                     children=[
+                        mydcc.Relayout(id="relayout-midgraph", aim='mid-graph-t'),
                         html.Div(
                             id='top-middle-container',
                             className='window',
@@ -72,7 +74,14 @@ def serve_layout():
                                 'width': '100%',
                                 'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
                             },
-                            children=graph_1
+                            children=html.Div(
+                                className='plot-container',
+                                style={
+                                    'height': 400,
+                                    'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
+                                },
+                                children=graph_1
+                            )
                         )
                     ]
                 ),
@@ -98,6 +107,7 @@ def serve_layout():
                 html.Div(
                     className="three columns",
                     children=[
+                        mydcc.Relayout(id="relayout-adjacency", aim='adjacency_matrix'),
                         html.Div(
                           id='bottom-left-container',
                           className='window-small-bottom',
@@ -106,7 +116,14 @@ def serve_layout():
                               'width': '100%',
                               'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
                           },
-                          children=dcc.Graph(figure=adjacency_matrix)
+                          children=html.Div(
+                              className='plot-container',
+                              style={
+                                  'height': 200,
+                                  'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
+                              },
+                              children=dcc.Graph(figure=adjacency_matrix, id='adjacency_matrix')
+                          )
                         )
                     ]
                   ),
@@ -123,7 +140,7 @@ def serve_layout():
                             },
                             children=[
                                 html.H6("Select x-range: ", className='mid-text'),
-                                slider.draw('time_slider', 0, 50, 5),
+                                slider.draw('time_slider', xrange[0], xrange[1], int(xrange[1]/10)),
                                 html.Section(className='mid-text', id='output-text')
                             ])
                     ]
@@ -152,8 +169,7 @@ def serve_layout():
 
 @app.callback(
     Output('output-text', 'children'),
-    [Input('top-left-dropdown', 'value'), Input('top-left-checkbox', 'values'), Input('del-selection', 'n_clicks'),
-     Input('time_slider', 'value')])
+    [Input('top-left-dropdown', 'value'), Input('top-left-checkbox', 'values'), Input('del-selection', 'n_clicks')])
 def update_output(*value):
     print(value)
     return ['You have selected "{}"'.format(value)]
@@ -167,3 +183,19 @@ def display_selected_data(selectedData):
         print(ast.literal_eval(json.dumps(selectedData, indent=2)))
     except ValueError:
         pass
+
+@app.callback(
+    Output('relayout-midgraph', 'layout'),
+    [Input('time_slider', 'value')])
+def adjust_xrange(slider_range):
+    return {'xaxis':dict(
+        range=slider_range
+    )}
+
+@app.callback(
+    Output('relayout-adjacency', 'layout'),
+    [Input('time_slider', 'value')])
+def adjust_xrange(slider_range):
+    return {'xaxis':dict(
+        range=slider_range
+    )}

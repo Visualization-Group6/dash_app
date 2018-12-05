@@ -49,11 +49,11 @@ def make_scatterplot(filename):
     #    ticklabels.append(i)
 
     layout = go.Layout(hovermode= 'closest', height=200,margin={
-    'l': 40, 'b': 17, 't': 10, 'r': 0
+    'l': 40, 'b': 17, 't': 10, 'r': 20
 })
     fig = go.Figure([{'x': x,  'y': y, 'text': weight, 'type' : 'scatter', 'mode' : 'markers',
             'marker': {'color': np.log(weight),  'colorbar' : {'thickness':3,'title' : "Log"}}}], layout=layout)
-    return fig
+    return fig, [min(x), max(x)]
 
 
 #make_scatterplot("profile_semantic_trafo_final.txt")
