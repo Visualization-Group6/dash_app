@@ -8,6 +8,7 @@ from scripts import preProcessing
 from scripts import dataSelection
 from math import sin, cos, pi
 
+start = t.time()
 
 def angle(G, node): # returns angle in radians
     return (360/(max(G.nodes()) + 1)  * node) * pi/180
@@ -18,7 +19,7 @@ def y_node(node):
 
 
 def x_node(node):
-    return 30 * cos(angle(G, node))
+    return 10 * cos(angle(G, node))
 
 
 def filter_time(time):
@@ -48,13 +49,13 @@ for node in G.nodes(data=True):
     labels.append(node[0])
     i += 1
 
-
+# RADIAL: Comment the following lines if you want to use Fruchterman-Reingold
 pos = {}
 for key in G.nodes:
     print(key)
     pos[key] = [x_node(key), y_node(key)]
 
-# Uncomment next lines to have a fruchterman reingold layout
+# FORCE-DIRECTED: Uncomment next lines to have a fruchterman reingold layout
 # tree_pos = nx.fruchterman_reingold_layout(G, weight='weight')
 # pos = {}
 # for key in tree_pos:
@@ -86,9 +87,14 @@ fig = go.Figure(data=edge_trace+nodes,
                 title='<br> Profile Semantic Trafo',
                 titlefont=dict(size=16),
                 showlegend=False,
+                width= 1000,
+                height = 1000,
                 hovermode='closest',
                 margin=dict(b=20,l=5,r=5,t=40),
                 xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
                 yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)))
 
 offline.plot(fig)
+
+end = t.time()
+print(end - start)
