@@ -4,40 +4,22 @@ import dash_ui as dui
 import dash_core_components as dcc
 from pages.menu_items import dropdownMenu, slider, checkboxes
 from scripts import matrixVisualisation
+from scripts import preProcessing
 from app import app
 from dash.dependencies import Input, Output, State
 import json
 import ast
+import pickle
 import mydcc
+
+matrix_plot = matrixVisualisation.AdjacencyMatrix('profile_semantic_trafo_final.txt')
+xrange_matrix_plot = matrix_plot.get_range()
 
 
 def serve_layout():
-    adjacency_matrix, xrange = matrixVisualisation.make_scatterplot('profile_semantic_trafo_final.txt')
-    graph_1 = dcc.Graph(
-        id='mid-graph-t',
-        figure={
-            'data': [{
-                'x': [1, 2, 50],
-                'y': [3, 1, 2],
-                'type': 'bar'
-            }],
-            'layout': {
-                'height': 200,
-                'margin': {
-                    'l': 20, 'b': 50, 't': 50, 'r': 50
-                },
-                'xaxis': dict(
-                    tickmode='linear',
-                    ticks='outside',
-                    tick0=0,
-                    dtick=5,
-                    ticklen=8,
-                    tickwidth=4,
-                    tickcolor='#000'
-                )
-            }
-        }
-    )
+    colorscales = ["Greys", "YlGnBu", "Greens", "YlOrRd", "Bluered", "RdBu", "Reds", "Blues", "Picnic", "Rainbow",
+                   "Portland", "Jet", "Hot", "Blackbody", "Earth", "Electric", "Viridis", "Cividis"]
+    interleaved = pickle.load(open(preProcessing.get_working_dir()+'profile_semantic_trafo_final.dat', 'rb'))
     return([
         html.Div(
             className="row",
@@ -54,8 +36,8 @@ def serve_layout():
                                 'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
                             },
                             children=[
-                                html.H6(children='Select dataset: ', className='mid-text'),
-                                dropdownMenu.draw('top-left-dropdown', ['Option 1', 'Option 2']),
+                                html.H6(children='Select colorscale: ', className='mid-text'),
+                                dropdownMenu.draw('top-left-dropdown', colorscales),
                                 html.H6(children='Select tools: ', className='mid-text'),
                                 checkboxes.draw('top-left-checkbox', ['Kaas', 'Klant'])
                             ]
@@ -65,7 +47,7 @@ def serve_layout():
                 html.Div(
                     className="seven columns",
                     children=[
-                        mydcc.Relayout(id="relayout-midgraph", aim='mid-graph-t'),
+                        #mydcc.Relayout(id="relayout-midgraph", aim='mid-graph-t'),
                         html.Div(
                             id='top-middle-container',
                             className='window',
@@ -80,7 +62,10 @@ def serve_layout():
                                     'height': 400,
                                     'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
                                 },
-                                children=graph_1
+                                children=dcc.Graph(
+                                    id='mid-graph-t',
+                                    figure=interleaved
+                                )
                             )
                         )
                     ]
@@ -118,11 +103,12 @@ def serve_layout():
                           },
                           children=html.Div(
                               className='plot-container',
+                              id='matrix_plot',
                               style={
                                   'height': 200,
                                   'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
                               },
-                              children=dcc.Graph(figure=adjacency_matrix, id='adjacency_matrix')
+                              children=dcc.Graph(figure=matrix_plot.draw_plot(), id='adjacency_matrix')
                           )
                         )
                     ]
@@ -140,7 +126,7 @@ def serve_layout():
                             },
                             children=[
                                 html.H6("Select x-range: ", className='mid-text'),
-                                slider.draw('time_slider', xrange[0], xrange[1], int(xrange[1]/10)),
+                                slider.draw('time_slider', xrange_matrix_plot[0], xrange_matrix_plot[1], int(xrange_matrix_plot[1] / 10)),
                                 html.Section(className='mid-text', id='output-text')
                             ])
                     ]
@@ -169,33 +155,50 @@ def serve_layout():
 
 @app.callback(
     Output('output-text', 'children'),
-    [Input('top-left-dropdown', 'value'), Input('top-left-checkbox', 'values'), Input('del-selection', 'n_clicks')])
+    [Input('top-left-checkbox', 'values'), Input('del-selection', 'n_clicks')])
 def update_output(*value):
     print(value)
     return ['You have selected "{}"'.format(value)]
 
 
 @app.callback(
-    Output('selected-data', 'children'),
-    [Input('mid-graph-t', 'selectedData')])
-def display_selected_data(selectedData):
-    try:
-        print(ast.literal_eval(json.dumps(selectedData, indent=2)))
-    except ValueError:
-        pass
+    Output('matrix_plot', 'children'),
+    [Input('top-left-dropdown', 'value')])
+def update_colorscale(colorscale):
+    return dcc.Graph(figure=matrix_plot.draw_plot(colorscale), id='adjacency_matrix')
+
 
 @app.callback(
-    Output('relayout-midgraph', 'layout'),
-    [Input('time_slider', 'value')])
-def adjust_xrange(slider_range):
-    return {'xaxis':dict(
-        range=slider_range
-    )}
+    Output('time_slider', 'value'),
+    [Input('matrix_plot', 'children')])
+def update_silder(*args):
+    return xrange_matrix_plot
+
+
+#@app.callback(
+#    Output('selected-data', 'children'),
+#    [Input('mid-graph-t', 'selectedData')])
+#def display_selected_data(selectedData):
+#    try:
+#       print(ast.literal_eval(json.dumps(selectedData, indent=2)))
+#    except ValueError:
+#        pass
+
+#@app.callback(
+#    Output('relayout-midgraph', 'layout'),
+#    [Input('time_slider', 'value')])
+#def adjust_xrange(slider_range):
+#    return {'xaxis':dict(
+#        range=slider_range
+#    )}
 
 @app.callback(
     Output('relayout-adjacency', 'layout'),
     [Input('time_slider', 'value')])
 def adjust_xrange(slider_range):
-    return {'xaxis':dict(
-        range=slider_range
-    )}
+    return {
+        'xaxis': dict(
+            range=slider_range),
+        'yaxis':dict(
+            range=slider_range)
+    }
