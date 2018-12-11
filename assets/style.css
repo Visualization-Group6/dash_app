@@ -416,6 +416,10 @@ hr {
   border-radius: 0;
 }
 
+._dash-undo-redo{
+  visibility: hidden;
+}
+
 .Select-control{
   border-style: solid;
   border-width: 2px;
@@ -428,6 +432,7 @@ hr {
   position: relative;
   margin: auto;
   width: 90%;
+  height: 100%;
 }
 
 .mid-text{

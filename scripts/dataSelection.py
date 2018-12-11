@@ -36,11 +36,16 @@ def aggravate(filename, min_time=0, max_time=float("inf")):
     nodes = max([max([int(i[1]) for i in new_data[1:] if len(i) == 4]),
                  max([int(i[2]) for i in new_data[1:] if len(i) == 4])])
     project_array = np.zeros((nodes + 1, nodes + 1))
+    maxtime, mintime = 0, float('inf')
     for i in new_data[1:]:
         if len(i) == 4:
             if max_time >= int(i[0]) >= min_time:
+                if int(i[0]) < mintime:
+                    mintime = int(i[0])
+                elif int(i[0]) > maxtime:
+                    maxtime = int(i[0])
                 project_array[int(i[1]), int(i[2])] += int(i[3])
-    return project_array
+    return project_array, mintime, maxtime
 
 
 

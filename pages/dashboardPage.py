@@ -14,12 +14,13 @@ import mydcc
 
 matrix_plot = matrixVisualisation.AdjacencyMatrix('profile_semantic_trafo_final.txt')
 xrange_matrix_plot = matrix_plot.get_range()
-
+weightrange_matrix_plot = matrix_plot.get_weight()
+timerange_matrix_plot = matrix_plot.get_time()
 
 def serve_layout():
     colorscales = ["Greys", "YlGnBu", "Greens", "YlOrRd", "Bluered", "RdBu", "Reds", "Blues", "Picnic", "Rainbow",
                    "Portland", "Jet", "Hot", "Blackbody", "Earth", "Electric", "Viridis", "Cividis"]
-    interleaved = pickle.load(open(preProcessing.get_working_dir()+'profile_semantic_trafo_final.dat', 'rb'))
+    #interleaved = pickle.load(open(preProcessing.get_working_dir()+'profile_semantic_trafo_final.dat', 'rb'))
     return([
         html.Div(
             className="row",
@@ -62,10 +63,10 @@ def serve_layout():
                                     'height': 400,
                                     'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
                                 },
-                                children=dcc.Graph(
-                                    id='mid-graph-t',
-                                    figure=interleaved
-                                )
+                                #children=dcc.Graph(
+                                    #id='mid-graph-t',
+                                    #figure=interleaved
+                                #)
                             )
                         )
                     ]
@@ -97,16 +98,15 @@ def serve_layout():
                           id='bottom-left-container',
                           className='window-small-bottom',
                           style={
-                              'height': 200,
                               'width': '100%',
+                              'height': '270',
                               'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
                           },
                           children=html.Div(
                               className='plot-container',
                               id='matrix_plot',
                               style={
-                                  'height': 200,
-                                  'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
+                                  'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0},
                               },
                               children=dcc.Graph(figure=matrix_plot.draw_plot(), id='adjacency_matrix')
                           )
@@ -120,13 +120,20 @@ def serve_layout():
                             id='bottom-middle-container',
                             className='window-mid-bottom',
                             style={
-                                'height': 200,
                                 'width': '100%',
+                                'height': '270',
                                 'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
                             },
                             children=[
-                                html.H6("Select x-range: ", className='mid-text'),
-                                slider.draw('time_slider', xrange_matrix_plot[0], xrange_matrix_plot[1], int(xrange_matrix_plot[1] / 10)),
+                                html.H6("Select node-range: ", className='mid-text'),
+                                slider.draw('node_sider', xrange_matrix_plot[0], xrange_matrix_plot[1],
+                                            int(xrange_matrix_plot[1] / 10)),
+                                html.H6("Select log weight-range: ", className='mid-text'),
+                                slider.draw('weight_sider', weightrange_matrix_plot[0], weightrange_matrix_plot[1],
+                                            int(weightrange_matrix_plot[1] / 10)),
+                                html.H6("Select time-range: ", className='mid-text'),
+                                slider.draw('time_sider', timerange_matrix_plot[0], timerange_matrix_plot[1],
+                                            int(timerange_matrix_plot[1] / 10)),
                                 html.Section(className='mid-text', id='output-text')
                             ])
                     ]
@@ -138,7 +145,7 @@ def serve_layout():
                             id='bottom-right-container',
                             className='window-small-bottom',
                             style={
-                                'height': 200,
+                                'height': '270',
                                 'width': '100%',
                                 'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
                             },
@@ -163,13 +170,13 @@ def update_output(*value):
 
 @app.callback(
     Output('matrix_plot', 'children'),
-    [Input('top-left-dropdown', 'value')])
-def update_colorscale(colorscale):
-    return dcc.Graph(figure=matrix_plot.draw_plot(colorscale), id='adjacency_matrix')
+    [Input('top-left-dropdown', 'value'), Input('weight_sider', 'value'), Input('time_sider', 'value')])
+def update_colorscale(colorscale, weight, timerange):
+    return dcc.Graph(figure=matrix_plot.draw_plot(colorscale, weightrange=weight, timerange=timerange), id='adjacency_matrix')
 
 
 @app.callback(
-    Output('time_slider', 'value'),
+    Output('node_sider', 'value'),
     [Input('matrix_plot', 'children')])
 def update_silder(*args):
     return xrange_matrix_plot
@@ -186,7 +193,7 @@ def update_silder(*args):
 
 #@app.callback(
 #    Output('relayout-midgraph', 'layout'),
-#    [Input('time_slider', 'value')])
+#    [Input('node_sider', 'value')])
 #def adjust_xrange(slider_range):
 #    return {'xaxis':dict(
 #        range=slider_range
@@ -194,7 +201,7 @@ def update_silder(*args):
 
 @app.callback(
     Output('relayout-adjacency', 'layout'),
-    [Input('time_slider', 'value')])
+    [Input('node_sider', 'value')])
 def adjust_xrange(slider_range):
     return {
         'xaxis': dict(
