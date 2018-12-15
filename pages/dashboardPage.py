@@ -7,6 +7,7 @@ from scripts import matrixVisualisation
 from scripts import preProcessing
 from app import app
 from dash.dependencies import Input, Output, State
+from scripts import layoutDiagram
 import json
 import ast
 import pickle
@@ -16,6 +17,9 @@ matrix_plot = matrixVisualisation.AdjacencyMatrix('profile_semantic_trafo_final.
 xrange_matrix_plot = matrix_plot.get_range()
 weightrange_matrix_plot = matrix_plot.get_weight()
 timerange_matrix_plot = matrix_plot.get_time()
+
+node_link_plot = layoutDiagram.NodeLink("profile_semantic_trafo_final.txt")
+
 
 def serve_layout():
     colorscales = ["Greys", "YlGnBu", "Greens", "YlOrRd", "Bluered", "RdBu", "Reds", "Blues", "Picnic", "Rainbow",
@@ -59,14 +63,15 @@ def serve_layout():
                             },
                             children=html.Div(
                                 className='plot-container',
+                                id='midplot',
                                 style={
                                     'height': 400,
                                     'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
                                 },
-                                #children=dcc.Graph(
-                                    #id='mid-graph-t',
-                                    #figure=interleaved
-                                #)
+                                children=dcc.Graph(
+                                    id='mid-graph-t',
+                                    figure=node_link_plot.draw_plot(timerange_matrix_plot[0])
+                                )
                             )
                         )
                     ]
@@ -173,6 +178,14 @@ def update_output(*value):
     [Input('top-left-dropdown', 'value'), Input('weight_sider', 'value'), Input('time_sider', 'value')])
 def update_colorscale(colorscale, weight, timerange):
     return dcc.Graph(figure=matrix_plot.draw_plot(colorscale, weightrange=weight, timerange=timerange), id='adjacency_matrix')
+
+
+@app.callback(
+    Output('midplot', 'children'),
+    [Input('time_sider', 'value')])
+def update_midplot(timerange):
+    return dcc.Graph(id='mid-graph-t',
+                     figure=node_link_plot.draw_plot(timerange[0]))
 
 
 @app.callback(

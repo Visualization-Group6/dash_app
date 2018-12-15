@@ -8,93 +8,92 @@ from scripts import preProcessing
 from scripts import dataSelection
 from math import sin, cos, pi
 
-start = t.time()
 
-def angle(G, node): # returns angle in radians
-    return (360/(max(G.nodes()) + 1)  * node) * pi/180
+class NodeLink():
+    def __init__(self, dataset):
+        self.dataset = dataset
+        self.data = [0]
 
-
-def y_node(node):
-    return 10 * sin(angle(G, node))
-
-
-def x_node(node):
-    return 10 * cos(angle(G, node))
+    def angle(self, node): # returns angle in radians
+        return (360/(self.data.shape[0] + 1)  * node) * pi/180
 
 
-def filter_time(time):
-    newdata = []
-    with open(preProcessing.get_working_dir() + "profile_semantic_trafo_final.txt", "r") as f:
-        for line in f.read().split("\n")[2:]:
-            if len(line.split(" ")) >= 4:
-                if int(line.split(" ")[0]) == time:
-                    newdata.append(" ".join(line.split(" ")[1:4]) + line.split(" ")[4])
-    with open(preProcessing.get_working_dir() + "profile_semantic_trafo_final_"+str(time)+".txt", "w") as f:
-        f.write("\n".join(newdata))
-    return preProcessing.get_working_dir() +  "profile_semantic_trafo_final_"+str(time)+".txt"
+    def y_node(self, node):
+        return 10 * sin(self.angle(node))
 
 
-time = 1
+    def x_node(self, node):
+        return 10 * cos(self.angle(node))
 
-G = nx.read_edgelist(filter_time(time), nodetype=int, data=(('weight',int),))
-print(G.edges())
+    def read_data(self):
+        self.data = preProcessing.open_dataset(self.dataset)
+        self.startindex, self.endindex, self.timeindex = np.nonzero(self.data)
 
-weights = []
-for edge in G.edges(data=True):
-    weights.append(edge[2]['weight']*0.6)
+    def filter_time(self, time):
+        newdata = []
+        for start, end in zip(self.startindex[np.where(self.timeindex == time)],self.endindex[np.where(self.timeindex == time)]):
+            newdata.append(" ".join([str(start), str(end), str(self.data[start, end, time])]))
+        return nx.parse_edgelist(newdata, nodetype=int, data=(('weight',float),))
 
-labels = []
-i = 0
-for node in G.nodes(data=True):
-    labels.append(node[0])
-    i += 1
+    def draw_plot(self, time):
+        if len(self.data) == 1 :
+            self.read_data()
+        self.G = self.filter_time(time)
+        weights = []
+        for edge in self.G.edges(data=True):
+            weights.append(edge[2]['weight']*0.6)
 
-# RADIAL: Comment the following lines if you want to use Fruchterman-Reingold
-pos = {}
-for key in G.nodes:
-    print(key)
-    pos[key] = [x_node(key), y_node(key)]
+        labels = []
+        i = 0
+        for node in self.G.nodes(data=True):
+            labels.append(node[0])
+            i += 1
 
-# FORCE-DIRECTED: Uncomment next lines to have a fruchterman reingold layout
-# tree_pos = nx.fruchterman_reingold_layout(G, weight='weight')
-# pos = {}
-# for key in tree_pos:
-#     pos[key] = list(tree_pos[key])
+        # RADIAL: Comment the following lines if you want to use Fruchterman-Reingold
+        pos = {}
+        for key in self.G.nodes:
+            pos[key] = [self.x_node(key), self.y_node(key)]
 
-edge_trace = [dict(type='scatter',
-             x=[pos[e[0]][0], pos[e[1]][0]],
-             y=[pos[e[0]][1], pos[e[1]][1]],
-              mode='lines',
-              line=dict(color='black'))  for k, e in enumerate(G.edges())]
+        # FORCE-DIRECTED: Uncomment next lines to have a fruchterman reingold layout
+        # tree_pos = nx.fruchterman_reingold_layout(G, weight='weight')
+        # pos = {}
+        # for key in tree_pos:
+        #     pos[key] = list(tree_pos[key])
 
-xs, ys = [], []
-for key in pos:
-    xs.append(pos[key][0])
-    ys.append(pos[key][1])
+        edge_trace = [dict(type='scatter',
+                     x=[pos[e[0]][0], pos[e[1]][0]],
+                     y=[pos[e[0]][1], pos[e[1]][1]],
+                      mode='lines',
+                      line=dict(color='black'))  for k, e in enumerate(self.G.edges())]
 
-
-nodes = [dict(type='scatter',
-            x=[pos[label][0]],
-            y=[pos[label][1]],
-            mode='markers',
-            hoverinfo='text',
-            marker=dict(color='red'),
-            text=label) for label in labels]
+        xs, ys = [], []
+        for key in pos:
+            xs.append(pos[key][0])
+            ys.append(pos[key][1])
 
 
-fig = go.Figure(data=edge_trace+nodes,
-             layout=go.Layout(
-                title='<br> Profile Semantic Trafo',
-                titlefont=dict(size=16),
-                showlegend=False,
-                width= 1000,
-                height = 1000,
-                hovermode='closest',
-                margin=dict(b=20,l=5,r=5,t=40),
-                xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-                yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)))
+        nodes = [dict(type='scatter',
+                    x=[pos[label][0]],
+                    y=[pos[label][1]],
+                    mode='markers',
+                    hoverinfo='text',
+                    marker=dict(color='red'),
+                    text=label) for label in labels]
 
-offline.plot(fig)
 
-end = t.time()
-print(end - start)
+        fig = go.Figure(data=edge_trace+nodes,
+                     layout=go.Layout(
+                        title='<br> Profile Semantic Trafo',
+                        titlefont=dict(size=16),
+                        showlegend=False,
+                        width= 400,
+                        height = 400,
+                        hovermode='closest',
+                        margin=dict(b=20,l=5,r=5,t=40),
+                        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)))
+        return fig
+
+
+
+

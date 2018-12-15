@@ -13,6 +13,7 @@ class AdjacencyMatrix:
 
     def get_data(self, min_time=0, max_time=float("inf")):
         self.x = []
+        self.data = {}
         self.weight = []
         matrix, self.mintime, self.maxtime = ds.aggravate(self.filename, max_time=max_time, min_time=min_time)
         for i in range(matrix.shape[0]):
@@ -27,6 +28,7 @@ class AdjacencyMatrix:
         if not self.data:
             self.get_data()
         if timerange:
+            print(timerange)
             self.get_data(min_time=timerange[0], max_time=timerange[1])
         if not xrange:
             xrange = [min(self.x), max(self.x)]
