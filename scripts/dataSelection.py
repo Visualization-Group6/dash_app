@@ -39,7 +39,7 @@ def aggravate(filename, min_time=0, max_time=float("inf")):
     maxtime, mintime = 0, float('inf')
     for i in new_data[1:]:
         if len(i) == 4:
-            if max_time >= int(i[0]) >= min_time:
+            if max_time > int(i[0]) >= min_time:
                 if int(i[0]) < mintime:
                     mintime = int(i[0])
                 elif int(i[0]) > maxtime:

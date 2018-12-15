@@ -30,6 +30,16 @@ class AdjacencyMatrix:
         if timerange:
             print(timerange)
             self.get_data(min_time=timerange[0], max_time=timerange[1])
+            print(self.data)
+        if self.data == {}:
+            self.layout = go.Layout(hovermode='closest', height=260, margin={
+                'l': 25, 'b': 17, 't': 10, 'r': 5}, xaxis=dict(range=xrange), yaxis=dict(range=xrange))
+            fig = go.Figure([{'x': [], 'y': [], 'type': 'scatter', 'mode': 'markers',
+                              'marker': {'colorscale': colorscale,
+                                         'colorbar': {'thickness': 3, 'title': "Log"}}
+                              }
+                             ], layout=self.layout)
+            return fig
         if not xrange:
             xrange = [min(self.x), max(self.x)]
         x = []
