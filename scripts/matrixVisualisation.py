@@ -3,7 +3,8 @@ import plotly.graph_objs as go
 import plotly.plotly as py
 from plotly import offline
 from scripts import dataSelection as ds
-
+import time as t
+import inspect
 
 class AdjacencyMatrix:
     def __init__(self, filename):
@@ -28,9 +29,8 @@ class AdjacencyMatrix:
         if not self.data:
             self.get_data()
         if timerange:
-            print(timerange)
+            print(t.time(), "@", inspect.currentframe().f_code.co_name, "%0", timerange)
             self.get_data(min_time=timerange[0], max_time=timerange[1])
-            print(self.data)
         if self.data == {}:
             self.layout = go.Layout(hovermode='closest', height=260, margin={
                 'l': 25, 'b': 17, 't': 10, 'r': 5}, xaxis=dict(range=xrange), yaxis=dict(range=xrange))

@@ -17,6 +17,7 @@ app.layout = html.Div([
 @app.callback(Output('page-content', 'children'),
               [Input('url', 'pathname')])
 def display_page(pathname):
+    print("-----------------------------------")
     # This function called when ever a user navigates to a page:
     if pathname == '/UI':
         return dashboardPage.serve_layout()
