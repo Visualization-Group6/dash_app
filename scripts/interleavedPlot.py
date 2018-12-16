@@ -24,9 +24,10 @@ def draw_interleaved(filename, start_time = -float("inf"), end_time = float("inf
     ylist = []
     length = 10  # distance between start and end node
     edge_trace = []
-
+    is_saved = False
     for i in new_data[1:]:
         if len(xlist) > 11000:
+            is_saved = True
             edge_trace.append(go.Scattergl(x=xlist, y=ylist, line=dict(width=.5, color='black')))
             xlist = []
             ylist = []
@@ -38,6 +39,8 @@ def draw_interleaved(filename, start_time = -float("inf"), end_time = float("inf
             ylist.append(None)
             ylist.append(y_node(int(i[1])))
             ylist.append(y_node(int(i[2])))
+    if not is_saved:
+        edge_trace.append(go.Scattergl(x=xlist, y=ylist, line=dict(width=.5, color='black')))
     fig = dict(data=edge_trace,
                  layout=go.Layout(
                     height=400,
