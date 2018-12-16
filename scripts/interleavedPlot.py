@@ -15,7 +15,7 @@ def y_node(node): # function to determine y-value
 
 def draw_interleaved(filename, start_time = -float("inf"), end_time = float("inf"), weight_start = -float("inf"),
                      weight_end = float("inf")):
-
+    print(start_time, end_time, weight_start ,weight_end)
     working_dir = pp.get_working_dir()
     with open(working_dir + filename, 'r') as f:
         encoded_data = f.read()
@@ -30,7 +30,7 @@ def draw_interleaved(filename, start_time = -float("inf"), end_time = float("inf
             edge_trace.append(go.Scattergl(x=xlist, y=ylist, line=dict(width=.5, color='black')))
             xlist = []
             ylist = []
-        if start_time < int(i[0]) < end_time and weight_start < int(i[3]) < weight_end:
+        if start_time <= int(i[0]) < end_time and np.exp(weight_start) <= int(i[3]) < np.exp(weight_end):
             x = int(i[0]) * 0.1 - 0.1
             xlist.append(None)
             xlist.append(x)
@@ -38,7 +38,6 @@ def draw_interleaved(filename, start_time = -float("inf"), end_time = float("inf
             ylist.append(None)
             ylist.append(y_node(int(i[1])))
             ylist.append(y_node(int(i[2])))
-
     fig = dict(data=edge_trace,
                  layout=go.Layout(
                     height=400,
@@ -50,12 +49,5 @@ def draw_interleaved(filename, start_time = -float("inf"), end_time = float("inf
                     xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
                     yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)),
                )
-
+    print('done')
     return fig
-
-starttime = t.time()
-dataset = 'profile_semantic_trafo_final.txt'
-fig = draw_interleaved(dataset)
-offline.plot(fig)
-print(t.time() - starttime)
-#pickle.dump(fig, open(preProcessing.get_working_dir()+dataset.split(".txt")[0]+".dat", "wb"))
