@@ -13,6 +13,7 @@ import ast
 import pickle
 from scripts import interleavedPlot
 import mydcc
+import os
 
 plots = ['Radial', 'Fruchterman-Reingold', 'Interleaved dynamic network']
 matrix_plot = matrixVisualisation.AdjacencyMatrix('profile_semantic_trafo_final.txt')
@@ -25,6 +26,8 @@ node_link_plot = layoutDiagram.NodeLink("profile_semantic_trafo_final.txt")
 
 
 def serve_layout():
+    cwd = preProcessing.get_working_dir()
+    options = os.listdir(cwd)
     colorscales = ["Greys", "YlGnBu", "Greens", "YlOrRd", "Bluered", "RdBu", "Reds", "Blues", "Picnic", "Rainbow",
                    "Portland", "Jet", "Hot", "Blackbody", "Earth", "Electric", "Viridis", "Cividis"]
     #interleaved = pickle.load(open(preProcessing.get_working_dir()+'profile_semantic_trafo_final.dat', 'rb'))
@@ -47,6 +50,8 @@ def serve_layout():
                                 'margin': {'l': 0, 'b': 0, 't': 0, 'r': 0}
                             },
                             children=[
+                                html.H6(children='Select your data: ', className='mid-text'),
+                                dropdownMenu.draw('Choose_dataset', options, class_name='mid-text'),
                                 html.H6(children='Select type of plot: ', className='mid-text'),
                                 dropdownMenu.draw('plot-selector', plots),
                                 html.H6(children='Select colorscale: ', className='mid-text'),
