@@ -8,8 +8,9 @@ import time as t
 import scipy.sparse as sc
 import inspect
 
+
 class AdjacencyMatrix:
-    def _init_(self, filename):
+    def __init__(self, filename):
         self.filename = filename
         self.data = {}
 
@@ -22,12 +23,12 @@ class AdjacencyMatrix:
         times = [int(i[0]) for i in new_data[1:] if len(i) == 4]
         self.mintime = min(times)
         self.maxtime = max(times)
-        self.x = [int(i[1]) for i in new_data[1:] if len(i) == 4]
-        self.y = [int(i[2]) for i in new_data[1:] if len(i) == 4]
-        self.weight = [int(i[3]) for i in new_data[1:] if len(i) == 4]
+        self.x = [int(i[1]) for i in new_data[1:] if len(i) == 4 and min_time <= int(i[0]) < max_time]
+        self.y = [int(i[2]) for i in new_data[1:] if len(i) == 4 and min_time <= int(i[0]) < max_time]
+        self.weight = [int(i[3]) for i in new_data[1:] if len(i) == 4 and min_time <= int(i[0]) < max_time]
         self.data = {}
         for i in new_data[1:]:
-            if len(i) == 4:
+            if len(i) == 4 and min_time <= int(i[0]) < max_time:
                 self.data[int(i[1]),int(i[2])] = int(i[3])
 
 

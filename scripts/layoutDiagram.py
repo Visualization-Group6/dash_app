@@ -30,6 +30,7 @@ class NodeLink():
         return 10 * cos(self.angle(node))
 
     def read_data(self):
+        print(t.time(), "@", inspect.currentframe().f_code.co_name, self.dataset)
         self.data = preProcessing.open_dataset(self.dataset)
         self.startindex, self.endindex, self.timeindex = np.nonzero(self.data)
 
@@ -71,6 +72,8 @@ class NodeLink():
             noderange = [0, float('inf')]
         print(t.time(), "@", inspect.currentframe().f_code.co_name, "%0", noderange)
         print(t.time(), "@", inspect.currentframe().f_code.co_name, "%1", layout)
+        print(t.time(), "@", inspect.currentframe().f_code.co_name, "%1", time)
+        print(t.time(), "@", inspect.currentframe().f_code.co_name, "%1", weightrange)
         if layout == 'Radial':
             try:
                 self.saved_plotsR["".join([str(time), str(weightrange), str(noderange)])]
