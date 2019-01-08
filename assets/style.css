@@ -386,6 +386,7 @@ hr {
 .menu-bar{
   border-style: solid solid solid solid;
   border-color: #0FA0CE;
+  background-color: #D1D1D1;
   width: 100%;
 }
 
