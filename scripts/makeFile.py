@@ -4,6 +4,10 @@ import numpy as np
 import time
 import os
 import pandas as pd
+from scripts import preProcessing
+import io
+import gzip
+
 
 def make_oregon_file():
     files = ['oregon1_010331.txt.gz', 'oregon1_010407.txt.gz', 'oregon1_010414.txt.gz', 'oregon1_010421.txt.gz',
@@ -43,10 +47,10 @@ def csv_gz_to_txt(dataset):
         print('This is not the correct file extension.')
     if '.'.join(dataset.split('.')[-2:]) == 'csv.gz':
         print('csv.gz file!')
-        data = pd.read_csv(dataset, compression='gzip', header=-1)
+        data = pd.read_csv(preProcessing.get_working_dir() + str(dataset), compression='gzip', header=-1)
         data = data.rename(index=int, columns={0: "Start", 1: "Target", 2: 'Weight', 3: 'Time'})
 
-        f = open(dataset.split('.')[0] + '.txt', 'w')
+        f = open(preProcessing.get_working_dir() + dataset.split('.')[0] + '.txt', 'w')
         f.write('Time Start Target Weight')
         f.write('\n\n')
         for i in range(len(data)):
@@ -60,3 +64,24 @@ def csv_gz_to_txt(dataset):
         return None
 
 
+
+
+def dat_gz_to_txt(dataset):
+    print('dat_.gz file!')
+    f = open(dataset.split('.')[0] + '.txt', 'w')
+    f.write('Time Start Target Weight')
+    f.write('\n\n')
+    with gzip.open(preProcessing.get_working_dir() + str(dataset)) as input_file:
+        with io.TextIOWrapper(input_file, encoding='utf-8') as dec:
+            output = dec.read()
+            for line in output.split('\n'):
+                line = line.split(' ')
+                if len(line) == 3:
+                    line[0] = str(int((int(line[0]) - 32520)/10))
+                    line.append('1') # all get weight 1
+                    line = ' '.join(line)
+                    line = line + '\n'
+                    f.write(line)
+    print('.txt file saved')
+    f.close()
+    return None

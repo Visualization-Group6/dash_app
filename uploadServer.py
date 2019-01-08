@@ -4,6 +4,7 @@ from werkzeug.utils import secure_filename
 import dash
 import dash_html_components as html
 import os
+from scripts import makeFile
 cwd = os.getcwd()
 UPLOAD_FOLDER = cwd + '\\datasets'
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -24,6 +25,12 @@ def upload_file():
         file = request.files['file']
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        if ".csv.gz" in filename:
+            makeFile.csv_gz_to_txt(filename)
+            os.remove(UPLOAD_FOLDER+"/"+filename)
+        if ".dat_.gz" in filename:
+            makeFile.dat_gz_to_txt(filename)
+            os.remove(UPLOAD_FOLDER+"/"+filename)
     return '''
     <form method=post enctype=multipart/form-data>
       <input type=file name=file>
