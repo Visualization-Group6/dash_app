@@ -139,25 +139,25 @@ class interactiveDashboard():
     def bottom_mid_menu_buttons(self):
         def get_right_slidertype():
             if self.current_plot == 'Radial' or self.current_plot == 'Fruchterman-Reingold':
-                return (html.H6("Select time: ", className='mid-text'),
+                return [html.H6("Select time: ", className='mid-text'),
                         slider.draw('time_slider', self.timerange_matrix_plot[0], self.timerange_matrix_plot[1],
-                                    int(self.timerange_matrix_plot[1] / 10)))
+                                    int(self.timerange_matrix_plot[1] / 10))]
             elif self.current_plot == 'Interleaved dynamic network':
-                return (html.H6("Select time-range: ", className='mid-text'),
+                return [html.H6("Select time-range: ", className='mid-text'),
                         rangeSlider.draw('time_slider', self.timerange_matrix_plot[0],
                                          self.timerange_matrix_plot[1],
-                                         int(self.timerange_matrix_plot[1] / 10), visible=False))
+                                         int(self.timerange_matrix_plot[1] / 10))]
 
         if self.current_plot and self.current_dataset:
-            return [
+            default = [
                 html.H6("Select node-range: ", className='mid-text'),
                 rangeSlider.draw('node_slider', self.xrange_matrix_plot[0], self.xrange_matrix_plot[1],
                                  int(self.xrange_matrix_plot[1] / 10), visible=False),
                 html.H6("Select log weight-range: ", className='mid-text'),
                 rangeSlider.draw('weight_slider', self.weightrange_matrix_plot[0], self.weightrange_matrix_plot[1],
-                                 int(self.weightrange_matrix_plot[1] / 10), visible=False),
-                get_right_slidertype(),
-                html.Section(className='mid-text', id='output-text')]
+                                 int(self.weightrange_matrix_plot[1] / 10), visible=False)]
+            default.extend(get_right_slidertype())
+            return default
         else:
             return None
 
@@ -181,11 +181,10 @@ class interactiveDashboard():
 
 @app.callback(
     Output('console_output', 'children'),
-    [Input('plot-selector', 'value'), Input('top-left-dropdown', 'value'), Input('shortestfrom', 'n_submit'),
+    [Input('top-left-dropdown', 'value'), Input('shortestfrom', 'n_submit'),
      Input('shortestto', 'n_submit')])
-def handle_top_left_menu(plottype, colorscale, shortestfrom, shortestto):
+def handle_top_left_menu(colorscale, shortestfrom, shortestto):
     print(t.time(), "@", inspect.currentframe().f_code.co_name, "Handing event.")
-    dashboard.current_plot = plottype
 
 
 @app.callback(
@@ -203,13 +202,25 @@ def handle_dataset(dataset):
     Output('relayout-adjacency', 'layout'),
     [Input('node_slider', 'value')])
 def adjust_node_range(rangeSlider_range):
-    print("-----adjust_xrange----")
+    print(t.time(), "@", inspect.currentframe().f_code.co_name, "Handing event.")
     return {
         'xaxis': dict(
             range=rangeSlider_range),
         'yaxis': dict(
             range=rangeSlider_range)
     }
+
+
+@app.callback(
+    Output('bottom-middle-container', 'children'),
+    [Input('plot-selector', 'value')]
+)
+def handle_plot_selection(plottype):
+    print(t.time(), "@", inspect.currentframe().f_code.co_name, "Handing event.")
+    dashboard.current_plot = plottype
+    #print(dashboard.bottom_mid_menu_buttons())
+    return dashboard.bottom_mid_menu_buttons()
+
 
 """"PLACEHOLDER CALLBACK FOR FILLING IN MIDPLOT AFTER USER HAS SUBMITTED WANTED OPTIONS"""
 
@@ -231,6 +242,7 @@ def serve_layout():
             },
             children=[dashboard.bottom_left_container(), dashboard.bottom_mid_menu()]
         )])
+
 
 #                 html.Div(
 #                     className="two columns",
@@ -398,4 +410,3 @@ def serve_layout():
 #         range=rangeSlider_range
 #     )}
 #
-
