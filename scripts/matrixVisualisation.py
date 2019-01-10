@@ -54,7 +54,7 @@ class AdjacencyMatrix:
         weight = []
         for coordinate in self.data:
             if weightrange:
-                if self.data[coordinate] > np.exp(weightrange[0]) and self.data[coordinate] < np.exp(weightrange[1]):
+                if self.data[coordinate] >= np.exp(weightrange[0]) and self.data[coordinate] < np.exp(weightrange[1]):
                     x.append(coordinate[0])
                     y.append(coordinate[1])
                     weight.append(self.data[coordinate])
@@ -62,8 +62,6 @@ class AdjacencyMatrix:
                 x.append(coordinate[0])
                 y.append(coordinate[1])
                 weight.append(self.data[coordinate])
-
-
         self.layout = go.Layout(hovermode= 'closest', height=260,margin={
         'l': 25, 'b': 17, 't': 10, 'r': 5},xaxis=dict(range=xrange),yaxis=dict(range=xrange))
         fig = go.Figure([{'x': x,  'y': y, 'text': weight, 'type' : 'scatter', 'mode' : 'markers',
@@ -81,6 +79,8 @@ class AdjacencyMatrix:
     def get_weight(self):
         if not self.data:
             self.get_data()
+        if int(np.log(min(self.weight))) == int(np.log(max(self.weight))):
+            return [int(np.log(min(self.weight))), int(np.log(max(self.weight)))+1]
         return [int(np.log(min(self.weight))), int(np.log(max(self.weight)))]
 
     def get_time(self):

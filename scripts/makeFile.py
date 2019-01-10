@@ -55,7 +55,7 @@ def csv_gz_to_txt(dataset):
         f.write('\n\n')
         for i in range(len(data)):
             # print(data['Time'][i])
-            res = [str(data['Time'][i]), str(data['Start'][i]), str(data['Target'][i]), str(data['Weight'][i])]
+            res = [str(int(data['Time'][i])), str(data['Start'][i]), str(data['Target'][i]), str(data['Weight'][i])]
             res = ' '.join(res)
             res = res + '\n'
             f.write(res)
