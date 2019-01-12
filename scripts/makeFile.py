@@ -24,10 +24,10 @@ def make_oregon_file():
             with io.TextIOWrapper(input_file, encoding='utf-8') as dec:
                 output = dec.read()
 
-        for line in output.split('\n')[4:4004]:
-            res = [str(times)]
-            line = line.split('\t')
+        for line in output.split('\n')[4:]:
+            line = line.strip().split('\t')
             if len(line) == 2:
+                res = [str(times)]
                 for i in line:
                     res.append(i)
                 res.append('1')
@@ -55,10 +55,11 @@ def csv_gz_to_txt(dataset):
         f.write('\n\n')
         for i in range(len(data)):
             # print(data['Time'][i])
-            res = [str(int(data['Time'][i])), str(data['Start'][i]), str(data['Target'][i]), str(data['Weight'][i])]
-            res = ' '.join(res)
-            res = res + '\n'
-            f.write(res)
+            if not data['Weight'][i] <= 0:
+                res = [str(int(data['Time'][i])), str(data['Start'][i]), str(data['Target'][i]), str(data['Weight'][i])]
+                res = ' '.join(res)
+                res = res + '\n' if i < len(data) else res
+                f.write(res)
         print('.txt file saved')
         f.close()
         return None

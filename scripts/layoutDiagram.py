@@ -10,6 +10,7 @@ import inspect
 import time as t
 import sys
 
+
 class NodeLink():
     def __init__(self, dataset):
         self.dataset = dataset
@@ -18,13 +19,11 @@ class NodeLink():
         self.saved_plotsR = {}
         self.saved_plotsFR = {}
 
-    def angle(self, node): # returns angle in radians
-        return (360/(self.data.shape[0] + 1)  * node) * pi/180
-
+    def angle(self, node):  # returns angle in radians
+        return (360 / (self.data.shape[0] + 1) * node) * pi / 180
 
     def y_node(self, node):
         return 10 * sin(self.angle(node))
-
 
     def x_node(self, node):
         return 10 * cos(self.angle(node))
@@ -37,19 +36,21 @@ class NodeLink():
     def filter(self, time, weightrange, noderange):
         if type(time) == list:
             return 0
-        print(t.time(), "@",inspect.currentframe().f_code.co_name,"%1", time, weightrange, noderange)
+        print(t.time(), "@", inspect.currentframe().f_code.co_name, "%1", time, weightrange, noderange)
         try:
             print(t.time(), "@", inspect.currentframe().f_code.co_name, "%2", self.startindex)
         except AttributeError:
             self.read_data()
         if "".join([str(time), str(weightrange), str(noderange)]) not in self.timedata:
-            print(t.time(), "@", inspect.currentframe().f_code.co_name,'%New timerange re-plotting')
+            print(t.time(), "@", inspect.currentframe().f_code.co_name, '%New timerange re-plotting')
             newdata = []
-            for start, end in zip(self.startindex[np.where(self.timeindex == time)],self.endindex[np.where(self.timeindex == time)]):
+            for start, end in zip(self.startindex[np.where(self.timeindex == time)],
+                                  self.endindex[np.where(self.timeindex == time)]):
                 if (start > noderange[0] and start < noderange[1]) and (end > noderange[0] and end < noderange[1]):
-                    if float(self.data[start, end, time]) >= np.exp(weightrange[0]) and float(self.data[start, end, time]) < np.exp(weightrange[1]):
+                    if float(self.data[start, end, time]) >= np.exp(weightrange[0]) and float(
+                            self.data[start, end, time]) < np.exp(weightrange[1]):
                         newdata.append(" ".join([str(start), str(end), str(self.data[start, end, time])]))
-            edgelist = nx.parse_edgelist(newdata, nodetype=int, data=(('weight',float),))
+            edgelist = nx.parse_edgelist(newdata, nodetype=int, data=(('weight', float),))
             print(edgelist.edges())
             self.timedata["".join([str(time), str(weightrange), str(noderange)])] = edgelist
         return self.timedata["".join([str(time), str(weightrange), str(noderange)])]
@@ -89,14 +90,14 @@ class NodeLink():
             else:
                 return self.saved_plotsFR["".join([str(time), str(weightrange), str(noderange)])]
         else:
-                return None
+            return None
 
-        if len(self.data) == 1 :
+        if len(self.data) == 1:
             self.read_data()
         self.G = self.filter(time, weightrange, noderange)
         weights = []
         for edge in self.G.edges(data=True):
-            weights.append(edge[2]['weight']*0.6)
+            weights.append(edge[2]['weight'] * 0.6)
 
         labels = []
         i = 0
@@ -128,44 +129,39 @@ class NodeLink():
                                    mode='lines',
                                    line=dict(color=color)))
 
-
         nodes = [dict(type='scatter',
-                    x=[pos[label][0]],
-                    y=[pos[label][1]],
-                    mode='markers',
-                    hoverinfo='text',
-                    marker=dict(color='red'),
-                    text=label) for label in labels]
+                      x=[pos[label][0]],
+                      y=[pos[label][1]],
+                      mode='markers',
+                      hoverinfo='text',
+                      marker=dict(color='red'),
+                      text=label) for label in labels]
 
         if layout == 'Fruchterman-Reingold':
-            fig = go.Figure(data=edge_trace+nodes,
-                         layout=go.Layout(
-                            title='<br> Profile Semantic Trafo',
-                            titlefont=dict(size=16),
-                            showlegend=False,
-                            width= 1000,
-                            height = 500,
-                            hovermode='closest',
-                            xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-                            yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)))
+            fig = go.Figure(data=edge_trace + nodes,
+                            layout=go.Layout(
+                                title='<br> Profile Semantic Trafo',
+                                titlefont=dict(size=16),
+                                showlegend=False,
+                                width=1000,
+                                height=500,
+                                hovermode='closest',
+                                xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                                yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)))
         elif layout == 'Radial':
-            fig = go.Figure(data=edge_trace+nodes,
-                         layout=go.Layout(
-                            title='<br> Profile Semantic Trafo',
-                            titlefont=dict(size=16),
-                            showlegend=False,
-                            width= 500,
-                            height = 500,
-                            hovermode='closest',
-                            xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-                            yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)))
+            fig = go.Figure(data=edge_trace + nodes,
+                            layout=go.Layout(
+                                title='<br> Profile Semantic Trafo',
+                                titlefont=dict(size=16),
+                                showlegend=False,
+                                width=500,
+                                height=500,
+                                hovermode='closest',
+                                xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                                yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)))
         if layout == 'Fruchterman-Reingold':
             self.saved_plotsFR[time] = fig
             return self.saved_plotsFR[time]
         elif layout == 'Radial':
             self.saved_plotsR[time] = fig
             return self.saved_plotsR[time]
-
-
-
-

@@ -14,7 +14,6 @@ class AdjacencyMatrix:
         self.filename = filename
         self.data = {}
 
-
     def get_data(self, min_time=0, max_time=float("inf")):
         working_dir = pp.get_working_dir()
         with open(working_dir + self.filename, 'r') as f:
@@ -29,8 +28,7 @@ class AdjacencyMatrix:
         self.data = {}
         for i in new_data[1:]:
             if len(i) == 4 and min_time <= int(i[0]) < max_time:
-                self.data[int(i[1]),int(i[2])] = int(i[3])
-
+                self.data[int(i[1]), int(i[2])] = int(i[3])
 
     def draw_plot(self, colorscale=None, xrange=None, weightrange=None, timerange=None):
         if not self.data:
@@ -62,11 +60,11 @@ class AdjacencyMatrix:
                 x.append(coordinate[0])
                 y.append(coordinate[1])
                 weight.append(self.data[coordinate])
-        self.layout = go.Layout(hovermode= 'closest', height=260,margin={
-        'l': 25, 'b': 17, 't': 10, 'r': 5},xaxis=dict(range=xrange),yaxis=dict(range=xrange))
-        fig = go.Figure([{'x': x,  'y': y, 'text': weight, 'type' : 'scatter', 'mode' : 'markers',
-                          'marker': {'colorscale': colorscale,'color': np.log(weight),
-                                     'colorbar' : {'thickness':3,'title' : "Log"}}
+        self.layout = go.Layout(hovermode='closest', height=260, margin={
+            'l': 25, 'b': 17, 't': 10, 'r': 5}, xaxis=dict(range=xrange), yaxis=dict(range=xrange))
+        fig = go.Figure([{'x': x, 'y': y, 'text': weight, 'type': 'scatter', 'mode': 'markers',
+                          'marker': {'colorscale': colorscale, 'color': np.log(weight),
+                                     'colorbar': {'thickness': 3, 'title': "Log"}}
                           }
                          ], layout=self.layout)
         return fig
@@ -80,7 +78,7 @@ class AdjacencyMatrix:
         if not self.data:
             self.get_data()
         if int(np.log(min(self.weight))) == int(np.log(max(self.weight))):
-            return [int(np.log(min(self.weight))), int(np.log(max(self.weight)))+1]
+            return [int(np.log(min(self.weight))), int(np.log(max(self.weight))) + 1]
         return [int(np.log(min(self.weight))), int(np.log(max(self.weight)))]
 
     def get_time(self):
@@ -89,8 +87,8 @@ class AdjacencyMatrix:
         return [self.mintime, self.maxtime]
 
     def reorder(self):
-        length = max(max(self.x),max(self.y))
-        sparse_matrix = sc.csr_matrix((self.weight,(self.x,self.y)),shape= (length+1,length+1))
+        length = max(max(self.x), max(self.y))
+        sparse_matrix = sc.csr_matrix((self.weight, (self.x, self.y)), shape=(length + 1, length + 1))
         index_order = sc.csgraph.reverse_cuthill_mckee(sparse_matrix)  # returns order of new matrix
         index_mapping = dict()
         for i in range(len(index_order)):
