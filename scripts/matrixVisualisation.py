@@ -28,7 +28,10 @@ class AdjacencyMatrix:
         self.data = {}
         for i in new_data[1:]:
             if len(i) == 4 and min_time <= int(i[0]) < max_time:
-                self.data[int(i[1]), int(i[2])] = int(i[3])
+                if (int(i[1]),int(i[2])) in self.data:
+                    self.data[int(i[1]), int(i[2])] += int(i[3])
+                else:
+                    self.data[int(i[1]), int(i[2])] = int(i[3])
 
     def draw_plot(self, colorscale=None, xrange=None, weightrange=None, timerange=None):
         now = t.time()

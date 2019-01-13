@@ -275,6 +275,7 @@ def execute_mainplot(n_clicks, dataset, plottype):
             return dcc.Graph(id='mid-graph-t',
                              style={'margin': 'auto'},
                              figure=interleavedPlot.draw_interleaved(dashboard.current_dataset,
+                                                                     colorscale=dashboard.current_colorscale,
                                                                      start_time=dashboard.current_timerange[0],
                                                                      end_time=dashboard.current_timerange[1],
                                                                      weight_start=dashboard.current_weightrange[0],
