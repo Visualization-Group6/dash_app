@@ -73,22 +73,6 @@ class NodeLink():
         print(t.time(), "@", inspect.currentframe().f_code.co_name, "%1", layout)
         print(t.time(), "@", inspect.currentframe().f_code.co_name, "%1", time)
         print(t.time(), "@", inspect.currentframe().f_code.co_name, "%1", weightrange)
-        if layout == 'Radial':
-            try:
-                self.saved_plotsR["".join([str(time), str(weightrange), str(noderange)])]
-            except KeyError:
-                pass
-            else:
-                return self.saved_plotsR["".join([str(time), str(weightrange), str(noderange)])]
-        elif layout == 'Fruchterman-Reingold':
-            try:
-                self.saved_plotsFR["".join([str(time), str(weightrange), str(noderange)])]
-            except KeyError:
-                pass
-            else:
-                return self.saved_plotsFR["".join([str(time), str(weightrange), str(noderange)])]
-        else:
-            return None
 
         if len(self.data) == 1:
             self.read_data()
