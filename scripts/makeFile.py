@@ -65,8 +65,6 @@ def csv_gz_to_txt(dataset):
         return None
 
 
-
-
 def dat_gz_to_txt(dataset):
     print('dat_.gz file!')
     f = open(preProcessing.get_working_dir() + dataset.split('.')[0] + '.txt', 'w')
@@ -78,8 +76,8 @@ def dat_gz_to_txt(dataset):
             for line in output.split('\n'):
                 line = line.split(' ')
                 if len(line) == 3:
-                    line[0] = str(int((int(line[0]) - 32520)/10))
-                    line.append('1') # all get weight 1
+                    line[0] = str(int((int(line[0]) - 32520) / 10))
+                    line.append('1')  # all get weight 1
                     line = ' '.join(line)
                     line = line + '\n'
                     f.write(line)

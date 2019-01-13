@@ -64,6 +64,7 @@ class NodeLink():
 
     def draw_plot(self, time, layout, weightrange=None, noderange=None, dijkstrafrom=None, dijkstrato=None,
                   colorscale='RdBu'):
+        now = t.time()
         if not noderange:
             noderange = [0, float('inf')]
         if type(time) == list:
@@ -104,7 +105,6 @@ class NodeLink():
         elif layout == 'Radial':
             pos = self.get_radial_pos()
         edgelist = []  # make a list of all edges in the shortest path
-        print(self.G.nodes())
         if dijkstrato and dijkstrafrom:
             nodepath = nx.dijkstra_path(self.G, int(dijkstrafrom), int(dijkstrato))
             print(t.time(), "@", inspect.currentframe().f_code.co_name, "%2", dijkstrafrom, dijkstrato, nodepath)
@@ -166,4 +166,6 @@ class NodeLink():
                                 hovermode='closest',
                                 xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
                                 yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)))
+        print(t.time(), "@", inspect.currentframe().f_code.co_name, "<<<MAIN PLOTTING TOOK", t.time() - now,
+              "SECONDS>>>")
         return fig

@@ -31,6 +31,7 @@ class AdjacencyMatrix:
                 self.data[int(i[1]), int(i[2])] = int(i[3])
 
     def draw_plot(self, colorscale=None, xrange=None, weightrange=None, timerange=None):
+        now = t.time()
         if not self.data:
             self.get_data()
         if timerange:
@@ -67,6 +68,8 @@ class AdjacencyMatrix:
                                      'colorbar': {'thickness': 3, 'title': "Log"}}
                           }
                          ], layout=self.layout)
+        print(t.time(), "@", inspect.currentframe().f_code.co_name, "<<<MATRIX PLOTTING TOOK", t.time() - now,
+              "SECONDS>>>")
         return fig
 
     def get_range(self):
