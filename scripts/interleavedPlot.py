@@ -52,25 +52,50 @@ def draw_interleaved(filename, colorscale,
     max_w = np.log(max([int(i[3]) for i in new_data if len(i) == 4]))
     min_w = np.log(min([int(i[3]) for i in new_data if len(i) == 4]))
     edge_trace = []
-    edge_trace = check_weight(new_data, -0.01, 0.1, edge_trace, colorscale, max_w, min_w)
-    edge_trace = check_weight(new_data, 0.1, 0.2, edge_trace, colorscale, max_w, min_w)
-    edge_trace = check_weight(new_data, 0.2, 0.3, edge_trace, colorscale, max_w, min_w)
-    edge_trace = check_weight(new_data, 0.3, 0.4, edge_trace, colorscale, max_w, min_w)
-    edge_trace = check_weight(new_data, 0.4, 0.5, edge_trace, colorscale, max_w, min_w)
-    edge_trace = check_weight(new_data, 0.5, 0.6, edge_trace, colorscale, max_w, min_w)
-    edge_trace = check_weight(new_data, 0.6, 0.7, edge_trace, colorscale, max_w, min_w)
-    edge_trace = check_weight(new_data, 0.7, 0.8, edge_trace, colorscale, max_w, min_w)
-    edge_trace = check_weight(new_data, 0.8, 0.9, edge_trace, colorscale, max_w, min_w)
-    edge_trace = check_weight(new_data, 0.9, 1.0, edge_trace, colorscale, max_w, min_w)
+    if max_w == min_w:
+        xlist = []
+        ylist = []
+        length = 10
+        for i in new_data:
+            if len(xlist) > 11000:
+                edge_trace.append(go.Scattergl(x=xlist, y=ylist,
+                                               line=dict(width=.5,
+                                                         color=cs.get_color_interleaved(0, colorscale))))
+                xlist = []
+                ylist = []
+            x = int(i[0]) * 0.1 - 0.1
+            xlist.append(None)
+            xlist.append(x)
+            xlist.append(x + length)
+            ylist.append(None)
+            ylist.append(y_node(int(i[1])))
+            ylist.append(y_node(int(i[2])))
+        if len(xlist) != 0:
+            edge_trace.append(go.Scattergl(x=xlist, y=ylist,
+                                           line=dict(width=.5,
+                                                     color=cs.get_color_interleaved(0, colorscale))))
+    else:
+        edge_trace = check_weight(new_data, -0.01, 0.1, edge_trace, colorscale, max_w, min_w)
+        edge_trace = check_weight(new_data, 0.1, 0.2, edge_trace, colorscale, max_w, min_w)
+        edge_trace = check_weight(new_data, 0.2, 0.3, edge_trace, colorscale, max_w, min_w)
+        edge_trace = check_weight(new_data, 0.3, 0.4, edge_trace, colorscale, max_w, min_w)
+        edge_trace = check_weight(new_data, 0.4, 0.5, edge_trace, colorscale, max_w, min_w)
+        edge_trace = check_weight(new_data, 0.5, 0.6, edge_trace, colorscale, max_w, min_w)
+        edge_trace = check_weight(new_data, 0.6, 0.7, edge_trace, colorscale, max_w, min_w)
+        edge_trace = check_weight(new_data, 0.7, 0.8, edge_trace, colorscale, max_w, min_w)
+        edge_trace = check_weight(new_data, 0.8, 0.9, edge_trace, colorscale, max_w, min_w)
+        edge_trace = check_weight(new_data, 0.9, 1.0, edge_trace, colorscale, max_w, min_w)
     fig = dict(data=edge_trace,
-               layout=go.Layout(
-                    height=400,
-                    title='<br>Dynamic Graph Visualization',
-                    titlefont=dict(size=16),
-                    showlegend=False,
-                    hovermode='closest',
-                    margin=dict(b=20, l=5, r=5, t=40),
-                    xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-                    yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)),)
+           layout=go.Layout(
+                height=400,
+                title='<br>Dynamic Graph Visualization',
+                titlefont=dict(size=16),
+                showlegend=False,
+                hovermode='closest',
+                margin=dict(b=20, l=5, r=5, t=40),
+                xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)),)
+    print(t.time(), "@", inspect.currentframe().f_code.co_name, "<<<MAIN PLOTTING TOOK", t.time() - now,
+          "SECONDS>>>")
     return fig
 
