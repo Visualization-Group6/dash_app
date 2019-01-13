@@ -3,7 +3,10 @@ from flask import Flask, flash, request
 from werkzeug.utils import secure_filename
 import dash
 import dash_html_components as html
+import time as t
 import os
+import inspect
+from scripts import makeFile
 cwd = os.getcwd()
 UPLOAD_FOLDER = cwd + '\\datasets'
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -21,9 +24,17 @@ app.layout = html.Div(
 @app.server.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
+        now = t.time()
         file = request.files['file']
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        if ".csv.gz" in filename:
+            makeFile.csv_gz_to_txt(filename)
+            os.remove(UPLOAD_FOLDER+"/"+filename)
+        if ".dat_.gz" in filename:
+            makeFile.dat_gz_to_txt(filename)
+            os.remove(UPLOAD_FOLDER+"/"+filename)
+        print(t.time(), "@", inspect.currentframe().f_code.co_name, "<<<UPLOADING TOOK",t.time()-now,"SECONDS>>>")
     return '''
     <form method=post enctype=multipart/form-data>
       <input type=file name=file>

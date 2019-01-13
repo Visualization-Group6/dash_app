@@ -8,11 +8,11 @@ import time as t
 import scipy.sparse as sc
 import inspect
 
+
 class AdjacencyMatrix:
     def __init__(self, filename):
         self.filename = filename
         self.data = {}
-
 
     def get_data(self, min_time=0, max_time=float("inf")):
         working_dir = pp.get_working_dir()
@@ -22,16 +22,16 @@ class AdjacencyMatrix:
         times = [int(i[0]) for i in new_data[1:] if len(i) == 4]
         self.mintime = min(times)
         self.maxtime = max(times)
-        self.x = [int(i[1]) for i in new_data[1:] if len(i) == 4]
-        self.y = [int(i[2]) for i in new_data[1:] if len(i) == 4]
-        self.weight = [int(i[3]) for i in new_data[1:] if len(i) == 4]
+        self.x = [int(i[1]) for i in new_data[1:] if len(i) == 4 and min_time <= int(i[0]) < max_time]
+        self.y = [int(i[2]) for i in new_data[1:] if len(i) == 4 and min_time <= int(i[0]) < max_time]
+        self.weight = [int(i[3]) for i in new_data[1:] if len(i) == 4 and min_time <= int(i[0]) < max_time]
         self.data = {}
         for i in new_data[1:]:
-            if len(i) == 4:
-                self.data[int(i[1]),int(i[2])] = int(i[3])
-
+            if len(i) == 4 and min_time <= int(i[0]) < max_time:
+                self.data[int(i[1]), int(i[2])] = int(i[3])
 
     def draw_plot(self, colorscale=None, xrange=None, weightrange=None, timerange=None):
+        now = t.time()
         if not self.data:
             self.get_data()
         if timerange:
@@ -53,7 +53,7 @@ class AdjacencyMatrix:
         weight = []
         for coordinate in self.data:
             if weightrange:
-                if self.data[coordinate] > np.exp(weightrange[0]) and self.data[coordinate] < np.exp(weightrange[1]):
+                if self.data[coordinate] >= np.exp(weightrange[0]) and self.data[coordinate] < np.exp(weightrange[1]):
                     x.append(coordinate[0])
                     y.append(coordinate[1])
                     weight.append(self.data[coordinate])
@@ -61,15 +61,15 @@ class AdjacencyMatrix:
                 x.append(coordinate[0])
                 y.append(coordinate[1])
                 weight.append(self.data[coordinate])
-
-
-        self.layout = go.Layout(hovermode= 'closest', height=260,margin={
-        'l': 25, 'b': 17, 't': 10, 'r': 5},xaxis=dict(range=xrange),yaxis=dict(range=xrange))
-        fig = go.Figure([{'x': x,  'y': y, 'text': weight, 'type' : 'scatter', 'mode' : 'markers',
-                          'marker': {'colorscale': colorscale,'color': np.log(weight),
-                                     'colorbar' : {'thickness':3,'title' : "Log"}}
+        self.layout = go.Layout(hovermode='closest', height=260, margin={
+            'l': 25, 'b': 17, 't': 10, 'r': 5}, xaxis=dict(range=xrange), yaxis=dict(range=xrange))
+        fig = go.Figure([{'x': x, 'y': y, 'text': weight, 'type': 'scatter', 'mode': 'markers',
+                          'marker': {'colorscale': colorscale, 'color': np.log(weight),
+                                     'colorbar': {'thickness': 3, 'title': "Log"}}
                           }
                          ], layout=self.layout)
+        print(t.time(), "@", inspect.currentframe().f_code.co_name, "<<<MATRIX PLOTTING TOOK", t.time() - now,
+              "SECONDS>>>")
         return fig
 
     def get_range(self):
@@ -80,6 +80,8 @@ class AdjacencyMatrix:
     def get_weight(self):
         if not self.data:
             self.get_data()
+        if int(np.log(min(self.weight))) == int(np.log(max(self.weight))):
+            return [int(np.log(min(self.weight))), int(np.log(max(self.weight))) + 1]
         return [int(np.log(min(self.weight))), int(np.log(max(self.weight)))]
 
     def get_time(self):
@@ -88,8 +90,8 @@ class AdjacencyMatrix:
         return [self.mintime, self.maxtime]
 
     def reorder(self):
-        length = max(max(self.x),max(self.y))
-        sparse_matrix = sc.csr_matrix((self.weight,(self.x,self.y)),shape= (length+1,length+1))
+        length = max(max(self.x), max(self.y))
+        sparse_matrix = sc.csr_matrix((self.weight, (self.x, self.y)), shape=(length + 1, length + 1))
         index_order = sc.csgraph.reverse_cuthill_mckee(sparse_matrix)  # returns order of new matrix
         index_mapping = dict()
         for i in range(len(index_order)):
