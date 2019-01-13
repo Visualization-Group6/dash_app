@@ -21,7 +21,7 @@ import mydcc
 class interactiveDashboard():
     current_plot = None
     current_dataset = None
-    current_colorscale = None
+    current_colorscale = 'RdBu'
     matrix_plot = None
     current_from = None
     current_to = None
@@ -30,9 +30,7 @@ class interactiveDashboard():
     current_xrange = None
 
     def __init__(self):
-        self.colorscales = ["Greys", "YlGnBu", "Greens", "YlOrRd", "Bluered", "RdBu", "Reds", "Blues",
-                            "Picnic", "Rainbow", "Portland", "Jet", "Hot", "Blackbody", "Earth", "Electric",
-                            "Viridis", "Cividis"]
+        self.colorscales = ["Greys", "YlOrRd", "RdBu"]
         self.plots = ['Radial', 'Fruchterman-Reingold', 'Interleaved dynamic network']
         self.datasets = os.listdir(preProcessing.get_working_dir())
 
@@ -62,7 +60,7 @@ class interactiveDashboard():
                         html.H6(children='Select type of plot: ', className='mid-text'),
                         dropdownMenu.draw('plot-selector', self.plots),
                         html.H6(children='Select colorscale: ', className='mid-text'),
-                        dropdownMenu.draw('top-left-dropdown', self.colorscales),
+                        dropdownMenu.draw('top-left-dropdown', self.colorscales, default=self.current_colorscale),
                         html.H6(children='Draw shortest path (from, to): ', className='mid-text'),
                         html.Div(className='textbox-small', children=[
                             dcc.Input(id='shortestfrom', type='text', value=None,
@@ -184,8 +182,8 @@ class interactiveDashboard():
 
 @app.callback(
     Output('console_output', 'children'),
-    [Input('plot-selector', 'value'), Input('top-left-dropdown', 'value'), Input('shortestfrom', 'n_submit'),
-     Input('shortestto', 'n_submit'), Input('time_slider', 'value'), Input('weight_slider', 'value'),
+    [Input('plot-selector', 'value'), Input('top-left-dropdown', 'value'), Input('shortestfrom', 'value'),
+     Input('shortestto', 'value'), Input('time_slider', 'value'), Input('weight_slider', 'value'),
      Input('node_slider', 'value')])
 def handle_user_change(plottype, colorscale, shortestfrom, shortestto, timerange, weightrange, xrange):
     print(t.time(), "@", inspect.currentframe().f_code.co_name, "Handing event.")
@@ -251,7 +249,8 @@ def execute_mainplot(n_clicks, dataset, plottype):
                                                                           weightrange=dashboard.current_weightrange,
                                                                           noderange=dashboard.current_xrange,
                                                                           dijkstrafrom=dashboard.current_from,
-                                                                          dijkstrato=dashboard.current_to))
+                                                                          dijkstrato=dashboard.current_to,
+                                                                          colorscale=dashboard.current_colorscale))
         elif plottype == 'Interleaved dynamic network':
             if not dashboard.current_timerange:
                 dashboard.current_timerange = dashboard.timerange_matrix_plot
