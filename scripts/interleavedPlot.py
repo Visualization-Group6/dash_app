@@ -1,12 +1,7 @@
-import plotly.plotly as py
 import plotly.graph_objs as go
-from plotly import offline
 import numpy as np
 import time as t
 from scripts import preProcessing as pp
-from scripts import dataSelection
-from scipy import signal
-import pickle
 import inspect
 
 
