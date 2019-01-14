@@ -88,7 +88,7 @@ def draw_interleaved(filename, colorscale,
     fig = dict(data=edge_trace,
            layout=go.Layout(
                 height=400,
-                title='<br>Dynamic Graph Visualization',
+                title=filename,
                 titlefont=dict(size=16),
                 showlegend=False,
                 hovermode='closest',
