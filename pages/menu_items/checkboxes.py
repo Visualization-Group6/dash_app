@@ -6,10 +6,10 @@ def draw(element_id, elements: list):
     return(
         html.Div(
             className='checkbox',
-            children=dcc.Checklist(
+            children=dcc.RadioItems(
                 id=element_id,
                 options=[{'label': i, 'value': i} for i in elements],
-                values=[i for i in elements]
+                value=elements[0]
             )
         )
     )

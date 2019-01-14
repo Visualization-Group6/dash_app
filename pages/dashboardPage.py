@@ -61,6 +61,7 @@ class interactiveDashboard():
                         dropdownMenu.draw('plot-selector', self.plots),
                         html.H6(children='Select colorscale: ', className='mid-text'),
                         dropdownMenu.draw('top-left-dropdown', self.colorscales, default=self.current_colorscale),
+                        checkboxes.draw('matrix-reorder', ['Normal Matrix', 'Reordered Matrix']),
                         html.H6(children='Draw shortest path (from, to): ', className='mid-text'),
                         html.Div(className='textbox-small', children=[
                             dcc.Input(id='shortestfrom', type='text', value=None,
@@ -203,6 +204,7 @@ class interactiveDashboard():
      Input('node_slider', 'value')])
 def handle_user_change(plottype, colorscale, shortestfrom, shortestto, timerange, weightrange, xrange):
     print(t.time(), "@", inspect.currentframe().f_code.co_name, "Handing event.")
+    print(xrange)
     if type(timerange) != list:
         timerange = [timerange, timerange + 1]
     dashboard.current_colorscale = colorscale
@@ -237,17 +239,26 @@ def handle_plot_selection(plottype):
 
 
 @app.callback(Output('matrix_plot', 'children'),
-              [Input('execute', 'n_clicks'), Input('dataset-selector', 'value'), Input('plot-selector', 'value')])
-def execute_matrix(n_clicks, dataset, plottype):
+              [Input('execute', 'n_clicks'), Input('dataset-selector', 'value'), Input('plot-selector', 'value'),
+               Input('matrix-reorder', 'value')])
+def execute_matrix(n_clicks, dataset, plottype, plottypeM):
     if dataset:
         dashboard.current_dataset = dataset
         dashboard.get_matrix_plot_info()
-        return [mydcc.Relayout(id='relayout-adjacency', aim='adjacency_matrix'),
-                dcc.Graph(figure=dashboard.matrix_plot.draw_plot(colorscale=dashboard.current_colorscale,
-                                                                 weightrange=dashboard.current_weightrange,
-                                                                 timerange=dashboard.current_timerange,
-                                                                 xrange=dashboard.current_xrange),
-                          id='adjacency_matrix')]
+        if plottypeM == 'Reordered Matrix':
+            return [mydcc.Relayout(id='relayout-adjacency', aim='adjacency_matrix'),
+                    dcc.Graph(figure=dashboard.matrix_plot.reorder(colorscale=dashboard.current_colorscale,
+                                                                   weightrange=dashboard.current_weightrange,
+                                                                   timerange=dashboard.current_timerange,
+                                                                   xrange=dashboard.current_xrange),
+                              id='adjacency_matrix')]
+        else:
+            return [mydcc.Relayout(id='relayout-adjacency', aim='adjacency_matrix'),
+                    dcc.Graph(figure=dashboard.matrix_plot.draw_plot(colorscale=dashboard.current_colorscale,
+                                                                     weightrange=dashboard.current_weightrange,
+                                                                     timerange=dashboard.current_timerange,
+                                                                     xrange=dashboard.current_xrange),
+                              id='adjacency_matrix')]
 
 
 @app.callback(Output('midplot', 'children'),
@@ -275,6 +286,7 @@ def execute_mainplot(n_clicks, dataset, plottype):
             return dcc.Graph(id='mid-graph-t',
                              style={'margin': 'auto'},
                              figure=interleavedPlot.draw_interleaved(dashboard.current_dataset,
+                                                                     colorscale=dashboard.current_colorscale,
                                                                      start_time=dashboard.current_timerange[0],
                                                                      end_time=dashboard.current_timerange[1],
                                                                      weight_start=dashboard.current_weightrange[0],
