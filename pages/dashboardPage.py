@@ -141,6 +141,7 @@ class interactiveDashboard():
 
     def bottom_mid_menu_buttons(self):
         def get_right_slidertype():
+            self.current_timerange = self.timerange_matrix_plot
             if self.current_plot == 'Radial' or self.current_plot == 'Fruchterman-Reingold':
                 return [html.H6("Select time: ", className='mid-text'),
                         slider.draw('time_slider', self.timerange_matrix_plot[0], self.timerange_matrix_plot[1],
@@ -203,6 +204,7 @@ class interactiveDashboard():
      Input('shortestto', 'value'), Input('time_slider', 'value'), Input('weight_slider', 'value'),
      Input('node_slider', 'value')])
 def handle_user_change(plottype, colorscale, shortestfrom, shortestto, timerange, weightrange, xrange):
+    t.sleep(1)
     print(t.time(), "@", inspect.currentframe().f_code.co_name, "Handing event.")
     print(xrange)
     if type(timerange) != list:
@@ -236,6 +238,20 @@ def handle_plot_selection(plottype):
     print(t.time(), "@", inspect.currentframe().f_code.co_name, "Handing event.")
     dashboard.current_plot = plottype
     return dashboard.bottom_mid_menu_buttons()
+
+
+@app.callback(Output('shortestfrom', 'value'),
+              [Input('execute', 'n_clicks')])
+def reset_path_from(n_clicks):
+    if n_clicks:
+        return ""
+
+
+@app.callback(Output('shortestto', 'value'),
+              [Input('execute', 'n_clicks')])
+def reset_path_to(n_clicks):
+    if n_clicks:
+        return ""
 
 
 @app.callback(Output('matrix_plot', 'children'),
@@ -279,10 +295,12 @@ def execute_mainplot(n_clicks, dataset, plottype):
                                                                           dijkstrato=dashboard.current_to,
                                                                           colorscale=dashboard.current_colorscale))
         elif plottype == 'Interleaved dynamic network':
-            if not dashboard.current_timerange:
+            if not dashboard.current_timerange or dashboard.current_timerange[-1] - dashboard.current_timerange[0]:
                 dashboard.current_timerange = dashboard.timerange_matrix_plot
             if not dashboard.current_weightrange:
                 dashboard.current_weightrange = dashboard.weightrange_matrix_plot
+            if not dashboard.current_xrange:
+                dashboard.current_weightrange = dashboard.xrange_matrix_plot
             return dcc.Graph(id='mid-graph-t',
                              style={'margin': 'auto'},
                              figure=interleavedPlot.draw_interleaved(dashboard.current_dataset,
@@ -290,7 +308,9 @@ def execute_mainplot(n_clicks, dataset, plottype):
                                                                      start_time=dashboard.current_timerange[0],
                                                                      end_time=dashboard.current_timerange[1],
                                                                      weight_start=dashboard.current_weightrange[0],
-                                                                     weight_end=dashboard.current_weightrange[1]))
+                                                                     weight_end=dashboard.current_weightrange[1],
+                                                                     start_node=dashboard.current_xrange[0],
+                                                                     end_node=dashboard.current_xrange[1]))
 
 
 def serve_layout():
