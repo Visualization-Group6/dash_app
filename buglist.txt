@@ -7,4 +7,4 @@
 
 
 -do not allow plottype to be selected before matrix is done loading (while loop in main plot checking for 'doneness' -> check
--allow for change of dataset without refreshing
+-allow for change of dataset without refreshing -> check

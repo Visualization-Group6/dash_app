@@ -70,6 +70,8 @@ class interactiveDashboard():
                                       style={'display': 'inline-table', 'width': '50%'})]),
                         html.Div(className='textbox-small', children=html.Button('Execute changes', id='execute',
                                                                                  className="button submit")),
+                        html.Div(className='textbox-small',
+                                 children=html.A(children="Reset dataset", className="button submit", href="/UI")),
                         # only here because callbacks need output:
                         html.Div(className='textbox-small', id='console_output')
                     ]
@@ -207,6 +209,23 @@ class interactiveDashboard():
         )
 
 
+@app.callback(Output('plot-selector', 'value'), [Input('dataset-selector', 'value')])
+def reset_plottype(dataset):
+    dashboard.current_timerange = None
+    dashboard.current_weightrange = None
+    dashboard.current_xrange = None
+    dashboard.current_plot = None
+    return None
+
+
+@app.callback(Output('dataset-selector', 'disabled'), [Input('dataset-selector', 'value')])
+def disable_dataset_selector(plottype):
+    if plottype:
+        return True
+    else:
+        return False
+
+
 @app.callback(
     Output('console_output', 'children'),
     [Input('plot-selector', 'value'), Input('top-left-dropdown', 'value'), Input('shortestfrom', 'value'),
@@ -244,6 +263,7 @@ def adjust_node_range(rangeSlider_range):
     [Input('plot-selector', 'value')]
 )
 def handle_plot_selection(plottype):
+    print(plottype)
     print(t.time(), "@", inspect.currentframe().f_code.co_name, "Handing event.")
     dashboard.current_plot = plottype
     return dashboard.bottom_mid_menu_buttons()
@@ -286,6 +306,12 @@ def execute_matrix(n_clicks, dataset, plottype, plottypeM):
     if dataset:
         dashboard.current_dataset = dataset
         dashboard.get_matrix_plot_info()
+        if not dashboard.current_timerange:
+            dashboard.current_timerange = dashboard.timerange_matrix_plot
+        if not dashboard.current_weightrange:
+            dashboard.current_weightrange = dashboard.weightrange_matrix_plot
+        if not dashboard.current_xrange:
+            dashboard.current_xrange = dashboard.xrange_matrix_plot
         if plottypeM == 'Reordered Matrix':
             return [mydcc.Relayout(id='relayout-adjacency', aim='adjacency_matrix'),
                     dcc.Graph(figure=dashboard.matrix_plot.reorder(colorscale=dashboard.current_colorscale,
