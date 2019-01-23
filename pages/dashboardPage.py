@@ -305,7 +305,7 @@ def execute_matrix(n_clicks, dataset, plottype, plottypeM):
 @app.callback(Output('midplot', 'children'),
               [Input('execute', 'n_clicks'), Input('dataset-selector', 'value'), Input('plot-selector', 'value')])
 def execute_mainplot(n_clicks, dataset, plottype):
-    if dataset:
+    if plottype:
         while True:
             try:
                 print(dashboard.xrange_matrix_plot)
