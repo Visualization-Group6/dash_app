@@ -1,0 +1,10 @@
+-catch error upload when no file selected. -> check
+-catch error wrong format data -> check
+-clear shortest path after execution -> check
+-fix nodeslider for interleaved -> check
+-fix switch type of plot from fruchterman/radial to interleaved not updating timesliders. -> check
+-fix no shortest path for interleaved -> check
+
+
+-do not allow plottype to be selected before matrix is done loading (while loop in main plot checking for 'doneness' -> check
+-allow for change of dataset without refreshing

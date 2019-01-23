@@ -64,9 +64,9 @@ class interactiveDashboard():
                         checkboxes.draw('matrix-reorder', ['Normal Matrix', 'Reordered Matrix']),
                         html.H6(children='Draw shortest path (from, to): ', className='mid-text'),
                         html.Div(className='textbox-small', children=[
-                            dcc.Input(id='shortestfrom', type='text', value=None,
+                            dcc.Input(id='shortestfrom', type='text', value=None, disabled=True,
                                       style={'display': 'inline-table', 'width': '50%'}),
-                            dcc.Input(id='shortestto', type='text', value=None,
+                            dcc.Input(id='shortestto', type='text', value=None, disabled=True,
                                       style={'display': 'inline-table', 'width': '50%'})]),
                         html.Div(className='textbox-small', children=html.Button('Execute changes', id='execute',
                                                                                  className="button submit")),
@@ -153,6 +153,15 @@ class interactiveDashboard():
                                          int(self.timerange_matrix_plot[1] / 10))]
 
         if self.current_plot and self.current_dataset:
+            while True:
+                try:
+                    print(self.xrange_matrix_plot)
+                    print(self.weightrange_matrix_plot)
+                    print(self.timerange_matrix_plot)
+                except AttributeError:
+                    pass
+                else:
+                    break
             default = [
                 html.H6("Select node-range: ", className='mid-text'),
                 rangeSlider.draw('node_slider', self.xrange_matrix_plot[0], self.xrange_matrix_plot[1],
@@ -254,6 +263,22 @@ def reset_path_to(n_clicks):
         return ""
 
 
+@app.callback(Output('shortestto', 'disabled'),
+              [Input('plot-selector', 'value')])
+def reset_path_to(plottype):
+    if plottype == 'Radial' or plottype == 'Fruchterman-Reingold':
+        return False
+    return True
+
+
+@app.callback(Output('shortestfrom', 'disabled'),
+              [Input('plot-selector', 'value')])
+def reset_path_to(plottype):
+    if plottype == 'Radial' or plottype == 'Fruchterman-Reingold':
+        return False
+    return True
+
+
 @app.callback(Output('matrix_plot', 'children'),
               [Input('execute', 'n_clicks'), Input('dataset-selector', 'value'), Input('plot-selector', 'value'),
                Input('matrix-reorder', 'value')])
@@ -281,6 +306,15 @@ def execute_matrix(n_clicks, dataset, plottype, plottypeM):
               [Input('execute', 'n_clicks'), Input('dataset-selector', 'value'), Input('plot-selector', 'value')])
 def execute_mainplot(n_clicks, dataset, plottype):
     if dataset:
+        while True:
+            try:
+                print(dashboard.xrange_matrix_plot)
+                print(dashboard.weightrange_matrix_plot)
+                print(dashboard.timerange_matrix_plot)
+            except AttributeError:
+                pass
+            else:
+                break
         if plottype == 'Radial' or plottype == 'Fruchterman-Reingold':
             if not dashboard.current_timerange:
                 dashboard.current_timerange = dashboard.timerange_matrix_plot[0]
@@ -300,7 +334,7 @@ def execute_mainplot(n_clicks, dataset, plottype):
             if not dashboard.current_weightrange:
                 dashboard.current_weightrange = dashboard.weightrange_matrix_plot
             if not dashboard.current_xrange:
-                dashboard.current_weightrange = dashboard.xrange_matrix_plot
+                dashboard.current_xrange = dashboard.xrange_matrix_plot
             return dcc.Graph(id='mid-graph-t',
                              style={'margin': 'auto'},
                              figure=interleavedPlot.draw_interleaved(dashboard.current_dataset,
