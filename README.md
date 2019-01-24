@@ -1,4 +1,4 @@
-# dash_app
+# Visualization group 6
 
 - Get anaconda python 3.7 from https://www.anaconda.com/download/
 - Open anaconda prompt and run the following command; conda install python=3.6.1
