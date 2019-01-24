@@ -355,7 +355,7 @@ def execute_mainplot(n_clicks, dataset, plottype):
                                                                           dijkstrato=dashboard.current_to,
                                                                           colorscale=dashboard.current_colorscale))
         elif plottype == 'Interleaved dynamic network':
-            if not dashboard.current_timerange or dashboard.current_timerange[-1] - dashboard.current_timerange[0]:
+            if not dashboard.current_timerange or dashboard.current_timerange[-1] - dashboard.current_timerange[0] <= 1:
                 dashboard.current_timerange = dashboard.timerange_matrix_plot
             if not dashboard.current_weightrange:
                 dashboard.current_weightrange = dashboard.weightrange_matrix_plot
